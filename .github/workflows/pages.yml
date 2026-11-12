@@ -1,0 +1,66 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - 'specs/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one that is half-way through.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22.18'
+
+      # The specification page is generated from the markdown. Rebuild it here
+      # rather than trusting the committed copy, so a stale page cannot reach
+      # the published site even if someone forgot to run `npm run site`.
+      - name: Render the specification from specs/
+        run: node website/build.mjs
+
+      - name: Sanity-check the artifact
+        run: |
+          set -euo pipefail
+          for file in index.html 404.html spec/index.html spec/mlp-0000-core/index.html implementations/index.html assets/site.css .nojekyll; do
+            test -f "website/$file" || { echo "missing website/$file"; exit 1; }
+          done
+          grep -q 'Relay access' website/index.html
+          grep -q 'id="s19"' website/spec/mlp-0000-core/index.html
+          # Project sites are served from a subpath; a root-relative asset would
+          # 404 there. Fail the build instead of shipping a broken page.
+          if grep -rnE '(href|src)="/[^/]' website --include='*.html'; then
+            echo "root-relative links break a project-site deployment"; exit 1
+          fi
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: website
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

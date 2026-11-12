@@ -17,7 +17,8 @@
     "demo": "node packages/cli/src/mlp.ts demo",
     "site": "node website/build.mjs",
     "check:vectors": "node packages/cli/src/mlp.ts vectors --output test-vectors && git diff --exit-code -- test-vectors",
-    "check:site": "node website/build.mjs && git diff --exit-code -- website/spec/mlp-0000-core/index.html"
+    "check:site": "node website/build.mjs && git diff --exit-code -- website/spec/mlp-0000-core/index.html",
+    "check:pages": "node website/build.mjs && grep -L 'Relay access' website/index.html >/dev/null"
   },
   "devDependencies": {
     "typescript": "5.9.3",
