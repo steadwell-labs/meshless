@@ -17,9 +17,9 @@ jobs:
       matrix:
         node: ['22.18', '24']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
 
@@ -32,8 +32,8 @@ jobs:
     name: Typecheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: '22.18'
           cache: npm
@@ -44,8 +44,8 @@ jobs:
     name: Fixtures and site are current
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: '22.18'
       - name: Test vectors are regenerated from the code
@@ -57,7 +57,7 @@ jobs:
     name: Specification hygiene
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: No em dashes in normative tables, no tabs
         run: |
           if grep -nP '\t' specs/*.md docs/*.md 2>/dev/null; then
