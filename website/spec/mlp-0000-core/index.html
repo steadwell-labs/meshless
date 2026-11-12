@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MLP/1 Core Specification — Meshless Protocol (Draft 00)</title>
+<meta name="description" content="The complete Meshless Protocol (MLP/1) draft 00: identity, descriptors, discovery, grants, request proofs, receipts, security, and conformance.">
+<meta name="theme-color" content="#08090a">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%2308090a'/%3E%3Cg%20fill='none'%20stroke='%2379e6b3'%20stroke-width='1.6'%3E%3Ccircle%20cx='9'%20cy='22'%20r='3'/%3E%3Ccircle%20cx='23'%20cy='22'%20r='3'/%3E%3Ccircle%20cx='16'%20cy='10'%20r='3'/%3E%3Cpath%20d='M11.5%2020.2%2014.6%2012.6M20.5%2020.2%2017.4%2012.6M12%2022h8'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="../../assets/site.css">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Meshless">
+<meta property="og:title" content="MLP/1 Core Specification — Meshless Protocol (Draft 00)">
+<meta property="og:description" content="The complete Meshless Protocol (MLP/1) draft 00: identity, descriptors, discovery, grants, request proofs, receipts, security, and conformance.">
+<meta property="og:url" content="https://meshless.network/spec/mlp-0000-core/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MLP/1 Core Specification — Draft 00">
+<meta name="twitter:description" content="Identity, signed descriptors, scoped grants, request proofs, receipts, conformance, and governance. Experimental; not an IETF submission.">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="wordmark" href="../../index.html">meshless<span class="dot">.</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../index.html">Overview</a>
+      <a href="../index.html" aria-current="page">Specification</a>
+      <a class="nav-optional" href="../../implementations/index.html">Implementations</a>
+      <a class="ext" href="https://github.com/steadwell-labs/meshless" rel="noopener">GitHub</a>
+      <span class="version">MLP/1 · Draft 00</span>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <div class="doc-head">
+    <div class="wrap">
+      <div class="badges">
+        <span class="badge">MLP/1 · Draft 00</span>
+        <span class="badge badge--muted">Experimental · not an IETF submission</span>
+      </div>
+      <h1>Meshless Protocol (MLP/1)</h1>
+      <p class="docid">MLP-0000-core — working draft</p>
+
+      <dl class="docmeta">
+        <div><dt>Document</dt><dd>MLP-0000-core</dd></div>
+        <div><dt>Date</dt><dd>12 November 2026</dd></div>
+        <div><dt>Published by</dt><dd>Steadwell Labs</dd></div>
+        <div><dt>Status</dt><dd>Experimental, unstable</dd></div>
+        <div><dt>Profile</dt><dd>MLP/1-HTTP</dd></div>
+        <div><dt>Keywords</dt><dd>BCP 14</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="wrap doc-layout">
+
+    <aside class="doc-side" aria-label="Document contents">
+      <p class="side-label">Contents</p>
+      <p class="side-meta">MLP-0000-core · Draft 00</p>
+      <nav aria-label="Sections">
+        <ol class="doc-toc">
+          <li><a href="#s1"><span class="n">1</span><span>Abstract</span></a></li>
+          <li><a href="#s2"><span class="n">2</span><span>Status and terminology</span></a></li>
+          <li><a href="#s3"><span class="n">3</span><span>Goals and non-goals</span></a></li>
+          <li><a href="#s4"><span class="n">4</span><span>Roles and trust</span></a></li>
+          <li><a href="#s5"><span class="n">5</span><span>Mandatory interoperability profile</span></a></li>
+          <li><a href="#s6"><span class="n">6</span><span>Identity, keys, and enrollment</span></a></li>
+          <li><a href="#s7"><span class="n">7</span><span>Resource identifiers and descriptors</span></a></li>
+          <li><a href="#s8"><span class="n">8</span><span>Discovery</span></a></li>
+          <li><a href="#s9"><span class="n">9</span><span>Capability grants</span></a></li>
+          <li><a href="#s10"><span class="n">10</span><span>Wire encoding and request authentication</span></a></li>
+          <li><a href="#s11"><span class="n">11</span><span>HTTP endpoints and session lifecycle</span></a></li>
+          <li><a href="#s12"><span class="n">12</span><span>Invocation and receipts</span></a></li>
+          <li><a href="#s13"><span class="n">13</span><span>Errors</span></a></li>
+          <li><a href="#s14"><span class="n">14</span><span>Revocation and offline behavior</span></a></li>
+          <li><a href="#s15"><span class="n">15</span><span>Transport adapter contract</span></a></li>
+          <li><a href="#s16"><span class="n">16</span><span>Security and privacy considerations</span></a></li>
+          <li><a href="#s17"><span class="n">17</span><span>Conformance and test plan</span></a></li>
+          <li><a href="#s18"><span class="n">18</span><span>Extensions and governance</span></a></li>
+          <li><a href="#s19"><span class="n">19</span><span>References</span></a></li>
+          <li><a href="#appendix-a"><span class="n">A</span><span>Proposed doxx.net pilot (non-normative)</span></a></li>
+          <li><a href="#appendix-b"><span class="n">B</span><span>Wire examples (non-normative)</span></a></li>
+          <li><a href="#appendix-c"><span class="n">C</span><span>Changes in Draft 00</span></a></li>
+        </ol>
+      </nav>
+      <a class="side-back" href="../index.html">← Specification index</a>
+    </aside>
+
+    <div class="doc-main spec">
+
+      <p class="spec-lead">The complete text of draft 00, rendered from
+      <code>specs/mlp-0000-core.md</code> without abridgement. Section numbering
+      matches the draft. Where the draft says something is provisional, this
+      rendering keeps that word.</p>
+
+      <p><strong>MLP/1 · Draft 00 · 12 November 2026</strong></p>
+      <p>Steadwell Labs</p>
+      <p><strong>Status:</strong> Experimental working draft. Not an IETF submission. Not an implemented, audited, or deployed standard. Implementations that interoperate today may break without notice.</p>
+
+      <h2 id="s1"><span class="secnum">1</span>Abstract</h2>
+      <p>Meshless is an application-layer protocol for discovering, authorizing, and invoking resources across independently administered computing nodes. It separates resource ownership, network connectivity, and delegated authority.</p>
+      <p>A resource is described by a signed descriptor, reached through an endpoint chosen by its owner, and invoked under a short-lived, scoped grant that may be delegated a bounded number of times. Every invocation is bound to a single-use proof and produces a signed receipt.</p>
+      <p>Meshless operates without an Internet connection on a local network and over a private network remotely. No blockchain, central registry, commercial account, or particular AI agent is required. Nothing in the protocol requires that the provider and the consumer be administered by the same party.</p>
+      <p>The protocol does not replace IP, VPNs, TLS, the Model Context Protocol, or operating-system isolation. It is a resource access layer that runs above whatever connectivity already exists.</p>
+
+      <h2 id="s2"><span class="secnum">2</span>Status and terminology</h2>
+      <p>This document is a proposed experimental baseline. It is not an implemented or audited standard.</p>
+      <p>The key words <span class="rfc">MUST</span>, <span class="rfc">MUST NOT</span>, REQUIRED, SHALL, SHALL NOT, <span class="rfc">SHOULD</span>, <span class="rfc">SHOULD NOT</span>, <span class="rfc">MAY</span>, and OPTIONAL in this document are to be interpreted as described in BCP 14 [RFC 2119] [RFC 8174] when, and only when, they appear in all capitals.</p>
+      <p><code>MLP/1</code> denotes the proposed major wire version. Draft 00 is not a stable release. Unknown major versions <span class="rfc">MUST</span> be rejected (§18).</p>
+      <p>Terms used throughout:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Term</th><th scope="col">Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Resource</td><td>A capability hosted by a provider and identified by a resource ID.</td></tr>
+            <tr><td>Descriptor</td><td>A signed statement describing a resource: who owns it, who serves it, where it is, and which actions exist.</td></tr>
+            <tr><td>Grant</td><td>A signed, scoped, expiring authorization for one subject to invoke named actions on one resource.</td></tr>
+            <tr><td>Proof</td><td>A single-use, request-bound signature demonstrating possession of a subject key.</td></tr>
+            <tr><td>Receipt</td><td>A provider-signed record of one invocation and its outcome.</td></tr>
+            <tr><td>Chain</td><td>An ordered list of grants from a root grant to a leaf grant, inclusive.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="s3"><span class="secnum">3</span>Goals and non-goals</h2>
+      <h3 id="s3-1"><span class="secnum">3.1</span>Goals</h3>
+      <ol>
+        <li>Owner-controlled resources. The owner decides who may do what, for how long, and retains the ability to withdraw that authority.</li>
+        <li>Least privilege. Authority is expressed as an explicit set of actions on one resource with explicit hard limits, never as ambient access.</li>
+        <li>Portable identity. Principals are cryptographic keys, not accounts held by an intermediary.</li>
+        <li>Explicit delegation. Authority may be narrowed and passed on, but never widened.</li>
+        <li>Transport independence. The same identifiers, grants, and semantics apply over direct HTTPS on a LAN, over a private network, or over a future transport profile.</li>
+        <li>Local-first operation. A resource on the local network is usable with no Internet connection and no external service.</li>
+        <li>Verifiable invocation records. Consumers receive provider-signed receipts that bind a request to an outcome.</li>
+        <li>Interoperability. Existing applications, including MCP servers, can be exposed as resources without modification.</li>
+      </ol>
+      <h3 id="s3-2"><span class="secnum">3.2</span>Non-goals</h3>
+      <p>Meshless explicitly does not and does not claim to:</p>
+      <ul>
+        <li>replace IP, TLS, VPNs, overlay networks, or routing;</li>
+        <li>replace the Model Context Protocol, identity providers, or authorization servers that already own a domain of authority;</li>
+        <li>provide consensus, settlement, payment, or token issuance;</li>
+        <li>provide operating-system or hardware isolation between resources;</li>
+        <li>guarantee availability, latency, correctness of remote computation, or deletion of data already disclosed to a provider;</li>
+        <li>provide anonymity to any party;</li>
+        <li>hide inputs from the provider that executes them;</li>
+        <li>authorize remote physical actuation (§16).</li>
+      </ul>
+
+      <h2 id="s4"><span class="secnum">4</span>Roles and trust</h2>
+      <p>A <strong>principal</strong> is a human, organization, device, or agent represented by a cryptographic key pair.</p>
+      <ul>
+        <li>A <strong>provider</strong> hosts a resource and enforces policy on every invocation.</li>
+        <li>A <strong>consumer</strong> invokes a resource on behalf of a principal.</li>
+        <li>An <strong>owner</strong> controls the root authority over a resource ID.</li>
+        <li>A <strong>directory</strong> distributes signed descriptors. It cannot grant authority.</li>
+        <li>A <strong>relay</strong> forwards traffic. It cannot authorize resource access.</li>
+        <li>A <strong>transport adapter</strong> establishes connectivity. It cannot authorize resource access.</li>
+      </ul>
+      <p>Roles <span class="rfc">MAY</span> coexist on one node. A provider is commonly also a consumer of other resources.</p>
+      <p>Trust rules:</p>
+      <ol>
+        <li>Providers <span class="rfc">MUST</span> authenticate an owner during enrollment using an independently trusted channel (§6.2). Enrollment establishes which key is the root authority for a resource ID.</li>
+        <li>Possession of a key proves control of that key. It does not prove a legal identity, membership in an organization, or intent.</li>
+        <li>Unknown keys <span class="rfc">MUST NOT</span> be trusted solely because they self-sign. A key presented inside a signed object is only as trustworthy as the signer of that object and the enrollment decision behind it.</li>
+        <li>Network access and resource access are independently enforced. Reaching an endpoint grants nothing.</li>
+        <li>A directory, relay, or adapter that is compromised <span class="rfc">MUST NOT</span> be able to cause a grant to be widened or replayed. Compromise of these components is assumed in §16, not excluded.</li>
+      </ol>
+
+      <h2 id="s5"><span class="secnum">5</span>Mandatory interoperability profile</h2>
+      <h3 id="s5-1"><span class="secnum">5.1</span>MLP/1-HTTP</h3>
+      <p>An implementation <span class="rfc">MUST</span> support the following profile before claiming baseline interoperability:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Element</th><th scope="col">Requirement</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Transport</td><td>HTTP over TLS 1.3 [RFC 8446]</td></tr>
+            <tr><td>Encoding</td><td>UTF-8 JSON [RFC 8259]</td></tr>
+            <tr><td>Signature</td><td>Compact JWS [RFC 7515] with EdDSA over Ed25519 [RFC 8037]</td></tr>
+            <tr><td>Canonicalization</td><td>RFC 8785 JSON Canonicalization Scheme [RFC 8785]</td></tr>
+            <tr><td>Identifier hash</td><td>SHA-256</td></tr>
+            <tr><td>Base64url</td><td>RFC 4648 §5, unpadded</td></tr>
+            <tr><td>Time</td><td>Integer Unix seconds</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>TLS certificates <span class="rfc">MUST</span> be validated against an explicitly configured trust anchor: a public CA root, a private CA, or a pinned certificate enrolled for that provider. There <span class="rfc">MUST</span> be no insecure fallback, no &quot;proceed anyway&quot; path, and no plaintext mode. A private VPN or overlay network alone is insufficient; it does not remove the TLS requirement.</p>
+      <p>TLS termination <span class="rfc">MUST</span> occur at a trusted provider boundary. An untrusted relay <span class="rfc">MUST NOT</span> terminate application TLS. A relay that terminates TLS is, for the purposes of this protocol, the provider.</p>
+      <h3 id="s5-2"><span class="secnum">5.2</span>Non-mandatory profiles</h3>
+      <p>QUIC transport, libp2p transports, CBOR encoding, alternative signature algorithms, and payload encryption are future profiles. They are not required for baseline interoperability and <span class="rfc">MUST NOT</span> be assumed present. Section 18 governs their addition.</p>
+
+      <h2 id="s6"><span class="secnum">6</span>Identity, keys, and enrollment</h2>
+      <h3 id="s6-1"><span class="secnum">6.1</span>Key identifiers</h3>
+      <p>A key identifier is the string:</p>
+      <pre><code>mlp:key:&lt;thumbprint&gt;</code></pre>
+      <p>where <code>&lt;thumbprint&gt;</code> is the base64url encoding, without padding, of the SHA-256 digest of the RFC 8785 canonical form of the public Ed25519 JWK containing exactly the members <code>crv</code>, <code>kty</code>, and <code>x</code> [RFC 7638]. For Ed25519 the JWK is <code>{&quot;crv&quot;:&quot;Ed25519&quot;,&quot;kty&quot;:&quot;OKP&quot;,&quot;x&quot;:&quot;&lt;base64url public key&gt;&quot;}</code>.</p>
+      <p>Example: <code>mlp:key:z6Mk...</code> is not produced by this construction; identifiers are 43 base64url characters after the prefix, e.g. <code>mlp:key:7Xk9...</code>.</p>
+      <p>Key identifiers are stable and are used as <code>iss</code>, <code>sub</code>, <code>aud</code>, and <code>kid</code> values. A key identifier <span class="rfc">MUST</span> be recomputed from the public key and <span class="rfc">MUST</span> be compared as a byte string.</p>
+      <h3 id="s6-2"><span class="secnum">6.2</span>Public key distribution</h3>
+      <p>JWS objects carry a key identifier, not a key. To make delegation chains verifiable without a directory, MLP/1 defines these carriers:</p>
+      <ol>
+        <li>A <strong>descriptor</strong> <span class="rfc">MUST</span> include <code>owner_jwk</code> and <code>provider_jwk</code>, the public Ed25519 JWKs of the owner and the provider. <code>iss</code> <span class="rfc">MUST</span> equal the key identifier of <code>owner_jwk</code>; <code>provider</code> <span class="rfc">MUST</span> equal that of <code>provider_jwk</code>.</li>
+        <li>A <strong>grant</strong> <span class="rfc">MUST</span> include <code>sub_jwk</code>, the subject's public Ed25519 JWK, and <code>sub</code> <span class="rfc">MUST</span> equal that JWK's key identifier.</li>
+        <li>A <strong>verifier</strong> <span class="rfc">MUST</span> recompute the thumbprint of any embedded JWK and <span class="rfc">MUST</span> reject the object if it does not match the referenced key identifier.</li>
+      </ol>
+      <p><code>owner_jwk</code> is required because a key identifier is a hash and cannot reconstruct the key it names. Without it, a descriptor received as a file or a QR code could not be checked by a party that had not already enrolled the owner, and the descriptor exchange paths in §8 would be unimplementable. The resource ID still binds the key: an attacker who substitutes <code>owner_jwk</code> changes the thumbprint, which no longer matches the owner component of <code>rid</code>.</p>
+      <p>Consequently, a leaf subject's key is learned from the leaf grant, and a provider's signing key is learned from the descriptor that authorizes it. No online key lookup is required. Embedding keys also bounds the trust placed in any key distribution channel: a directory that substitutes a key changes the thumbprint and invalidates the object.</p>
+      <p>An <strong>enrollment record</strong> binds a resource ID to an owner root key and a provider key, recorded by the provider through a trusted channel. Enrollment records and revocation records <span class="rfc">MUST</span> be persisted across restarts.</p>
+      <h3 id="s6-3"><span class="secnum">6.3</span>JWS headers</h3>
+      <p>Every MLP/1 JWS object is in compact serialization, and its protected header <span class="rfc">MUST</span> contain:</p>
+      <ul>
+        <li><code>alg</code>: the string <code>EdDSA</code>;</li>
+        <li><code>kid</code>: the signer's key identifier, equal to the payload's <code>iss</code>;</li>
+        <li><code>typ</code>: the media type for the object (<code>mlp-resource+jwt</code>, <code>mlp-grant+jwt</code>, <code>mlp-proof+jwt</code>, or <code>mlp-receipt+jwt</code>).</li>
+      </ul>
+      <p>The protected header <span class="rfc">MUST</span> contain exactly these three members and no others. A verifier <span class="rfc">MUST</span> reject a header that carries any additional member, including <code>jwk</code>, <code>jku</code>, <code>x5u</code>, <code>x5c</code>, <code>crit</code>, <code>cty</code>, or <code>b64</code>, whose <code>alg</code> is anything other than <code>EdDSA</code>, whose <code>typ</code> is not the expected value, or whose <code>kid</code> does not equal <code>iss</code>. Verifiers <span class="rfc">MUST NOT</span> fetch key material from a URL named in a signed object.</p>
+      <p>A closed header is cheap and removes a class of attack: there is no key-selection member for a verifier to consult, no payload-processing flag to invert, and no extension point that could change what the signature covers.</p>
+      <h3 id="s6-4"><span class="secnum">6.4</span>Enrollment procedure</h3>
+      <p>Enrollment is out of band with respect to this protocol. A conforming implementation <span class="rfc">MUST</span> provide some procedure by which:</p>
+      <ol>
+        <li>the owner presents its root public key to the provider over an independently trusted channel (local presence, an operator command, a signed enrollment bundle delivered in person, or an organizational identity system);</li>
+        <li>the provider records the binding of resource ID to owner key;</li>
+        <li>the owner learns and records the provider's key identifier from the enrollment, so that the first descriptor it accepts is not merely self-asserted.</li>
+      </ol>
+      <p>Enrollment is a human decision. Implementations <span class="rfc">SHOULD</span> require an explicit confirmation showing the full key identifier and resource ID, <span class="rfc">SHOULD</span> render thumbprints in groups of four characters for comparison, and <span class="rfc">SHOULD</span> support revocation of an enrollment.</p>
+      <h3 id="s6-5"><span class="secnum">6.5</span>Key management</h3>
+      <ul>
+        <li>Agent keys <span class="rfc">SHOULD</span> be distinct from human keys. An agent's key <span class="rfc">SHOULD</span> live in OS-backed secure storage (Keychain, DPAPI, TPM, secure enclave) and <span class="rfc">SHOULD</span> be marked non-exportable where the platform allows.</li>
+        <li>Key rotation requires re-enrollment in Draft 00. There is no in-band rotation message. A rotated key is a new key identifier and therefore a new subject.</li>
+        <li>On suspected compromise the owner <span class="rfc">MUST</span> revoke outstanding grants (§11, §14), <span class="rfc">MUST</span> revoke the enrollment if the root key is affected, and <span class="rfc">MUST</span> re-enroll with a new key. Revocation of a key does not retroactively invalidate receipts or already-disclosed data.</li>
+        <li>Private keys <span class="rfc">MUST NOT</span> appear in descriptors, grants, proofs, receipts, logs, process arguments, or agent prompts.</li>
+      </ul>
+
+      <h2 id="s7"><span class="secnum">7</span>Resource identifiers and descriptors</h2>
+      <h3 id="s7-1"><span class="secnum">7.1</span>Resource identifiers</h3>
+      <p>A resource ID is:</p>
+      <pre><code>mlp:res:&lt;owner-thumbprint&gt;:&lt;uuid&gt;</code></pre>
+      <p>where <code>&lt;owner-thumbprint&gt;</code> is the owner's key identifier without the <code>mlp:key:</code> prefix, and <code>&lt;uuid&gt;</code> is a lowercase RFC 9562 UUIDv4 in 8-4-4-4-12 form [RFC 9562].</p>
+      <p>Resource IDs are stable across endpoint changes, provider restarts, and transport changes. A resource ID identifies an *authorization domain*: the owner and the resource. It does NOT identify a host, address, or process, and <span class="rfc">MUST NOT</span> be used as a network locator.</p>
+      <p>A consumer <span class="rfc">MUST</span> verify that the <code>&lt;owner-thumbprint&gt;</code> component equals the thumbprint of the descriptor <code>iss</code>, and <span class="rfc">MUST</span> reject the descriptor otherwise.</p>
+      <h3 id="s7-2"><span class="secnum">7.2</span>Descriptor claims</h3>
+      <p>A descriptor is a compact JWS with <code>typ</code> <code>mlp-resource+jwt</code>, signed by the resource owner. Its payload <span class="rfc">MUST</span> contain:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Claim</th><th scope="col">Type</th><th scope="col">Semantics</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>v</code></td><td>integer</td><td>Protocol version. <span class="rfc">MUST</span> be <code>1</code>.</td></tr>
+            <tr><td><code>rid</code></td><td>string</td><td>Resource ID (§7.1).</td></tr>
+            <tr><td><code>iss</code></td><td>string</td><td>Owner key identifier. <span class="rfc">MUST</span> be the signer.</td></tr>
+            <tr><td><code>owner_jwk</code></td><td>object</td><td>Owner public Ed25519 JWK (§6.2).</td></tr>
+            <tr><td><code>provider</code></td><td>string</td><td>Provider key identifier.</td></tr>
+            <tr><td><code>provider_jwk</code></td><td>object</td><td>Provider public Ed25519 JWK (§6.2).</td></tr>
+            <tr><td><code>seq</code></td><td>integer</td><td>Nonnegative safe integer, monotonically increasing per <code>rid</code>.</td></tr>
+            <tr><td><code>iat</code></td><td>integer</td><td>Issuance time.</td></tr>
+            <tr><td><code>exp</code></td><td>integer</td><td>Expiry time. <span class="rfc">MUST</span> be ≤ <code>iat</code> + 86400.</td></tr>
+            <tr><td><code>kind</code></td><td>string</td><td>One of <code>inference</code>, <code>mcp</code>, <code>storage</code>, <code>sensor</code>, <code>compute</code>, <code>application</code>.</td></tr>
+            <tr><td><code>actions</code></td><td>array</td><td>Nonempty array of unique strings. Action names allowed on this resource.</td></tr>
+            <tr><td><code>endpoint</code></td><td>string</td><td>HTTPS origin, e.g. <code>https://host:8443</code>. No path, query, fragment, or credentials.</td></tr>
+            <tr><td><code>meta</code></td><td>object</td><td>OPTIONAL. Free-form, non-normative. <span class="rfc">MUST NOT</span> contain secrets.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Additional rules:</p>
+      <ol>
+        <li>The owner <span class="rfc">MUST</span> sign the descriptor. A provider signature is not a substitute; <code>iss</code> is the owner.</li>
+        <li>A consumer <span class="rfc">MUST</span> reject a descriptor that is expired, not yet valid (<code>iat</code> in the future beyond 30 seconds of skew), whose <code>rid</code> owner component does not match <code>iss</code>, whose <code>iss</code> does not match the thumbprint of <code>owner_jwk</code>, whose <code>provider</code> does not match the thumbprint of <code>provider_jwk</code>, whose <code>endpoint</code> is not an <code>https</code> origin, or whose <code>actions</code> is empty, duplicated, or contains pattern syntax.</li>
+        <li>A consumer <span class="rfc">MUST</span> maintain a high-water mark of <code>seq</code> per resource ID and <span class="rfc">MUST</span> reject a descriptor whose <code>seq</code> is less than the stored mark. Equal <code>seq</code> with different bytes <span class="rfc">MUST</span> be rejected.</li>
+        <li>Descriptor expiry <span class="rfc">MUST</span> be no more than 24 hours after issuance. A shorter lifetime is RECOMMENDED for resources reachable from untrusted networks.</li>
+        <li><code>kind</code> selects an action schema profile (§12). <code>kind</code> is advisory for routing; enforcement is by explicit action name. Unknown <code>kind</code> values <span class="rfc">MUST</span> be rejected by baseline implementations.</li>
+        <li><code>meta</code> <span class="rfc">MUST</span> be treated as untrusted display data. An implementation <span class="rfc">MUST</span> limit its size and <span class="rfc">MUST NOT</span> act on it programmatically.</li>
+      </ol>
+      <h3 id="s7-3"><span class="secnum">7.3</span>Discovery and authorization are separate</h3>
+      <p>Possession of a valid descriptor conveys no authority. A descriptor states that an owner authorizes *the existence and location* of a resource. Invocation requires a grant (§9). An implementation <span class="rfc">MUST NOT</span> treat successful discovery as permission to invoke anything.</p>
+
+      <h2 id="s8"><span class="secnum">8</span>Discovery</h2>
+      <p>Baseline discovery is the explicit exchange of signed descriptors over a channel the participants already trust: a QR code, a file, a clipboard, a local administrator, an out-of-band message, or a directory.</p>
+      <h3 id="s8-1"><span class="secnum">8.1</span>Well-known endpoint</h3>
+      <p>A provider <span class="rfc">MAY</span> expose:</p>
+      <pre><code>GET /.well-known/meshless</code></pre>
+      <p>This path is provisional and unregistered. The response is <code>{&quot;v&quot;:1,&quot;descriptors&quot;:[&quot;&lt;compact JWS&gt;&quot;, ...]}</code> with <code>Content-Type: application/json</code> and <code>Cache-Control: no-store</code>.</p>
+      <p>The endpoint <span class="rfc">MUST</span> require a valid proof (§10) from a subject the provider has been configured to serve, or <span class="rfc">MUST</span> otherwise restrict access to a configured allowlist. Public listing is opt-in, off by default, and <span class="rfc">MUST</span> be a separate operator decision from serving. A provider that does not wish to be discoverable <span class="rfc">MUST</span> return <code>404</code>, not an authentication error, so as not to confirm existence.</p>
+      <h3 id="s8-2"><span class="secnum">8.2</span>Directories</h3>
+      <p>A directory <span class="rfc">MAY</span> distribute descriptors. It is untrusted infrastructure:</p>
+      <ol>
+        <li>It <span class="rfc">MUST</span> preserve descriptor bytes. A directory that re-signs or re-encodes a descriptor destroys its value.</li>
+        <li>It <span class="rfc">SHOULD</span> minimize metadata: no query logs keyed to identities, no per-subject association, no retention beyond what serving requires.</li>
+        <li>Consumers <span class="rfc">MUST NOT</span> automatically connect to arbitrary discovered URLs. Endpoint origins <span class="rfc">MUST</span> be approved by local policy (enrollment, allowlist, or explicit user action) before the first connection.</li>
+        <li>A directory <span class="rfc">MUST NOT</span> be able to make a consumer reach an endpoint that local policy has not approved.</li>
+      </ol>
+      <h3 id="s8-3"><span class="secnum">8.3</span>Local and optional discovery</h3>
+      <p>LAN discovery (mDNS/DNS-SD), rendezvous services, and libp2p-based discovery are optional extensions. When used:</p>
+      <ul>
+        <li>discovered descriptors <span class="rfc">MUST</span> still be verified in full;</li>
+        <li>DNS resolution and HTTP redirects <span class="rfc">MUST NOT</span> be used to bypass egress restrictions;</li>
+        <li>an implementation <span class="rfc">MUST NOT</span> downgrade to HTTP or to an unverified TXT-record key when direct verification fails.</li>
+      </ul>
+
+      <h2 id="s9"><span class="secnum">9</span>Capability grants</h2>
+      <h3 id="s9-1"><span class="secnum">9.1</span>Form</h3>
+      <p>A grant is a compact JWS with <code>typ</code> <code>mlp-grant+jwt</code>. Its payload <span class="rfc">MUST</span> contain:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Claim</th><th scope="col">Type</th><th scope="col">Semantics</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>v</code></td><td>integer</td><td><span class="rfc">MUST</span> be <code>1</code>.</td></tr>
+            <tr><td><code>jti</code></td><td>string</td><td>Random UUIDv4, unique per grant.</td></tr>
+            <tr><td><code>iss</code></td><td>string</td><td>Issuer key identifier.</td></tr>
+            <tr><td><code>sub</code></td><td>string</td><td>Subject key identifier.</td></tr>
+            <tr><td><code>sub_jwk</code></td><td>object</td><td>Subject public Ed25519 JWK (§6.2).</td></tr>
+            <tr><td><code>aud</code></td><td>string</td><td>Provider key identifier.</td></tr>
+            <tr><td><code>rid</code></td><td>string</td><td>Resource ID.</td></tr>
+            <tr><td><code>actions</code></td><td>array</td><td>Nonempty array of unique action names. No wildcards.</td></tr>
+            <tr><td><code>iat</code></td><td>integer</td><td>Issuance time.</td></tr>
+            <tr><td><code>nbf</code></td><td>integer</td><td>Not-before time. <span class="rfc">MUST</span> be ≥ <code>iat</code> and &lt; <code>exp</code>.</td></tr>
+            <tr><td><code>exp</code></td><td>integer</td><td>Expiry time. <span class="rfc">MUST</span> be ≤ <code>iat</code> + 86400.</td></tr>
+            <tr><td><code>delegate</code></td><td>boolean</td><td>Whether this grant may be delegated.</td></tr>
+            <tr><td><code>depth</code></td><td>integer</td><td>Remaining delegation depth, 0–3.</td></tr>
+            <tr><td><code>limits</code></td><td>object</td><td><code>{calls, bytes, max_ms}</code>, each a positive safe integer.</td></tr>
+            <tr><td><code>parent</code></td><td>string or null</td><td><code>null</code> for a root grant; otherwise the base64url SHA-256 of the exact parent compact JWS ASCII bytes.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A grant <span class="rfc">MUST NOT</span> contain wildcard actions, regular expressions, or action patterns. Every action is a literal string that <span class="rfc">MUST</span> appear in the descriptor's <code>actions</code> array.</p>
+      <p><code>delegate</code> <span class="rfc">MUST</span> equal <code>depth &gt; 0</code>. A grant with remaining depth is delegable; a grant with no remaining depth is not. The two claims cannot disagree, so a verifier never has to reconcile &quot;may delegate&quot; against &quot;cannot delegate further&quot;.</p>
+      <h3 id="s9-2"><span class="secnum">9.2</span>Root grants</h3>
+      <p>A root grant ( <code>parent</code> = <code>null</code> ) <span class="rfc">MUST</span> be signed by the resource owner whose key identifier is the owner component of <code>rid</code>, and <span class="rfc">MUST</span> satisfy:</p>
+      <ul>
+        <li><code>aud</code> equals the descriptor <code>provider</code>;</li>
+        <li><code>actions</code> is a subset of the descriptor <code>actions</code>;</li>
+        <li><code>depth</code> ≤ 3;</li>
+        <li><code>delegate</code> is <code>true</code> if and only if <code>depth</code> &gt; 0;</li>
+        <li>the grant is issued while a valid descriptor for <code>rid</code> exists.</li>
+      </ul>
+      <p>A root grant issued to a subject other than the owner's own key is the ordinary case: the owner is granting a consumer.</p>
+      <h3 id="s9-3"><span class="secnum">9.3</span>Delegation</h3>
+      <p>A child grant has a non-null <code>parent</code>. Its issuer <span class="rfc">MUST</span> be the parent's <code>sub</code>, and it <span class="rfc">MUST</span> satisfy every one of:</p>
+      <ol>
+        <li><code>aud</code> equals the parent <code>aud</code> (audience is invariant under delegation).</li>
+        <li><code>rid</code> equals the parent <code>rid</code>.</li>
+        <li><code>actions</code> is a subset of the parent <code>actions</code>.</li>
+        <li><code>[nbf, exp)</code> is contained in the parent's <code>[nbf, exp)</code>.</li>
+        <li>Each of <code>limits.calls</code>, <code>limits.bytes</code>, <code>limits.max_ms</code> is less than or equal to the corresponding parent limit.</li>
+        <li>The parent has <code>delegate</code> = <code>true</code>.</li>
+        <li><code>depth</code> equals parent <code>depth</code> − 1.</li>
+        <li><code>delegate</code> equals <code>depth &gt; 0</code>, so a child with <code>depth</code> <code>0</code> has <code>delegate</code> <code>false</code>.</li>
+        <li><code>parent</code> equals the base64url SHA-256 of the exact parent compact JWS ASCII bytes.</li>
+      </ol>
+      <p>Rules 3, 4, and 5 are conjunctive at every hop, so a chain can only narrow. A verifier <span class="rfc">MUST</span> evaluate all nine rules for every link. A verifier <span class="rfc">MUST NOT</span> accept a chain in which any link is missing: all ancestors <span class="rfc">MUST</span> be presented, from root to leaf.</p>
+      <h3 id="s9-4"><span class="secnum">9.4</span>Validation requirements</h3>
+      <p>A provider <span class="rfc">MUST</span> reject a grant chain unless:</p>
+      <ol>
+        <li>every signature verifies against the key identified by that object's <code>kid</code>, and every embedded JWK's thumbprint matches its key identifier;</li>
+        <li>the root grant is signed by the enrolled owner key for <code>rid</code>;</li>
+        <li>every delegation rule in §9.3 holds;</li>
+        <li>the leaf <code>aud</code> equals this provider's key identifier;</li>
+        <li>the leaf <code>rid</code> equals the resource being invoked;</li>
+        <li>the leaf <code>actions</code> is a subset of the descriptor <code>actions</code> for <code>rid</code>;</li>
+        <li>the current time is within every link's <code>[nbf, exp)</code>;</li>
+        <li>no link's <code>jti</code> is revoked, directly or by ancestor revocation;</li>
+        <li>the chain depth does not exceed 4 grants (root plus at most three delegations).</li>
+      </ol>
+      <p>An implementation <span class="rfc">MUST</span> reject an object containing an unknown claim that is marked critical, and <span class="rfc">MUST</span> reject an unsupported constraint. Unknown non-critical claims that carry no semantics <span class="rfc">MAY</span> be ignored, but an implementation <span class="rfc">SHOULD</span> record them.</p>
+      <h3 id="s9-5"><span class="secnum">9.5</span>Quota semantics</h3>
+      <p><code>limits</code> are hard aggregate ceilings, not per-request hints:</p>
+      <ul>
+        <li><code>calls</code> counts admitted invocations, including invocations that later fail, time out, or are rejected for schema errors after admission;</li>
+        <li><code>bytes</code> counts application-body bytes: the UTF-8 length of the canonical form of the invocation's <code>input</code> object plus that of its <code>result</code> object. Headers, the proof, and transport framing are excluded. Measuring the canonical form rather than the raw request bytes makes the charge identical across implementations regardless of whitespace or member order;</li>
+        <li><code>max_ms</code> bounds a single invocation's wall-clock duration.</li>
+      </ul>
+      <p>Quota is enforced <strong>per link</strong> including all ancestors. A provider <span class="rfc">MUST</span>, for each invocation, atomically reserve against the leaf and every ancestor, and <span class="rfc">MUST</span> reject the invocation if any link lacks remaining capacity. Counters <span class="rfc">MUST</span> be persisted across restart. Concurrent requests <span class="rfc">MUST NOT</span> be able to overshoot a ceiling; read-modify-write without atomicity is non-conforming.</p>
+      <p>An owner policy <span class="rfc">MAY</span> impose stricter limits than a grant states. The effective limit is the minimum of every applicable ceiling.</p>
+      <h3 id="s9-6"><span class="secnum">9.6</span>A grant is not a bearer credential</h3>
+      <p>Possessing the bytes of a grant confers no authority. Each invocation requires a proof signed by the current leaf subject's private key (§10) and a session (§11). Grants are therefore safe to transport over channels that are confidential but not necessarily trustworthy, and interception of a grant does not permit its use.</p>
+
+      <h2 id="s10"><span class="secnum">10</span>Wire encoding and request authentication</h2>
+      <h3 id="s10-1"><span class="secnum">10.1</span>JSON</h3>
+      <p>Implementations <span class="rfc">MUST</span> parse JSON strictly:</p>
+      <ul>
+        <li>duplicate member names <span class="rfc">MUST</span> be rejected;</li>
+        <li>invalid UTF-8 <span class="rfc">MUST</span> be rejected;</li>
+        <li><code>NaN</code>, <code>Infinity</code>, and <code>-Infinity</code> <span class="rfc">MUST</span> be rejected;</li>
+        <li>integers outside the IEEE-754 safe integer range <span class="rfc">MUST</span> be rejected;</li>
+        <li>a top-level value that is not an object <span class="rfc">MUST</span> be rejected where an object is required;</li>
+        <li>trailing content after the value <span class="rfc">MUST</span> be rejected.</li>
+      </ul>
+      <h3 id="s10-2"><span class="secnum">10.2</span>Canonicalization</h3>
+      <p>Signed JSON payloads <span class="rfc">MUST</span> be serialized with RFC 8785 before signing. Object members are sorted by UTF-16 code unit, numbers use the ECMAScript <code>Number::toString</code> form, strings use JSON escaping, and no insignificant whitespace is emitted.</p>
+      <p>A verifier <span class="rfc">MUST</span> re-canonicalize the decoded payload and <span class="rfc">MUST</span> reject the object if the result is not byte-identical to the received payload bytes. This prevents signature-valid but byte-different encodings from producing different hashes for the same semantic object, which would otherwise break the <code>parent</code> chain and the <code>grant_hash</code> binding.</p>
+      <p>Signatures are verified over the original JWS signing input (<code>base64url(header) || &quot;.&quot; || base64url(payload)</code>), never over a re-serialized object.</p>
+      <h3 id="s10-3"><span class="secnum">10.3</span>Encoding details</h3>
+      <ul>
+        <li>base64url without padding, without line breaks, canonical alphabet.</li>
+        <li>JWS payloads in compact serialization only; no detached payloads, no multiple signatures, no unprotected header.</li>
+        <li>Time values are integer Unix seconds.</li>
+        <li>Providers <span class="rfc">MUST</span> have a reliable clock. A provider whose clock is uncertain beyond a few seconds <span class="rfc">MUST</span> reject traffic rather than serve it.</li>
+        <li>Expired objects <span class="rfc">MUST</span> be rejected with no grace period. A skew allowance applies only to proof <code>iat</code> (§10.4).</li>
+      </ul>
+      <h3 id="s10-4"><span class="secnum">10.4</span>Proof of possession</h3>
+      <p>Every authenticated request carries a proof JWS with <code>typ</code> <code>mlp-proof+jwt</code>, signed by the leaf subject. Its payload <span class="rfc">MUST</span> contain:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Claim</th><th scope="col">Type</th><th scope="col">Semantics</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>v</code></td><td>integer</td><td><span class="rfc">MUST</span> be <code>1</code>.</td></tr>
+            <tr><td><code>iss</code></td><td>string</td><td>Leaf subject key identifier. <span class="rfc">MUST</span> be the signer.</td></tr>
+            <tr><td><code>aud</code></td><td>string</td><td>Provider key identifier.</td></tr>
+            <tr><td><code>jti</code></td><td>string</td><td>Random UUIDv4.</td></tr>
+            <tr><td><code>iat</code></td><td>integer</td><td>Signing time.</td></tr>
+            <tr><td><code>nonce</code></td><td>string</td><td>Nonce issued by this provider for this subject and resource.</td></tr>
+            <tr><td><code>method</code></td><td>string</td><td>Uppercase HTTP method.</td></tr>
+            <tr><td><code>uri</code></td><td>string</td><td>Exact requested origin plus path, with no query and no fragment.</td></tr>
+            <tr><td><code>body_hash</code></td><td>string</td><td>base64url SHA-256 of the exact request body bytes, or of the empty string when there is no body.</td></tr>
+            <tr><td><code>grant_hash</code></td><td>string</td><td>base64url SHA-256 of the exact leaf grant compact JWS ASCII bytes, or the empty string for owner-only operations (§11.6).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The provider <span class="rfc">MUST</span> compare <code>iss</code> against the session or chain subject, <code>aud</code> against its own key identifier, <code>method</code> and <code>uri</code> against the request exactly as received, <code>body_hash</code> against the exact bytes received, and <code>grant_hash</code> against the exact leaf grant. The provider <span class="rfc">MUST</span> accept a proof only if <code>|now − iat| ≤ 30</code> seconds. The provider <span class="rfc">MUST</span> consume the nonce atomically and single-use, and <span class="rfc">MUST</span> reject a reuse with <code>409 replay</code>.</p>
+      <p>This is a Meshless proof format inspired by DPoP [RFC 9449]. It is not DPoP and does not claim RFC 9449 compliance.</p>
+
+      <h2 id="s11"><span class="secnum">11</span>HTTP endpoints and session lifecycle</h2>
+      <h3 id="s11-1"><span class="secnum">11.1</span>Common requirements</h3>
+      <ul>
+        <li>Requests use <code>POST</code> with <code>Content-Type: application/json</code>, except the well-known discovery endpoint (§8.1) which uses <code>GET</code>.</li>
+        <li>No redirects. A provider <span class="rfc">MUST NOT</span> answer <code>3xx</code> on any MLP path, and a client <span class="rfc">MUST NOT</span> follow one.</li>
+        <li>Maximum request body is 1 MiB unless a resource profile sets a lower limit.</li>
+        <li>Responses are JSON with <code>Cache-Control: no-store</code>.</li>
+        <li>Requests carry <code>Meshless-Proof: &lt;compact JWS&gt;</code> except where noted.</li>
+        <li>Every POST body is proof-bound via <code>body_hash</code>, so an intermediary cannot alter it, but it is still plaintext to the provider.</li>
+        <li>A request without a valid proof <span class="rfc">MUST</span> be rejected before grant evaluation, so that grant structure is not disclosed to unauthenticated callers.</li>
+      </ul>
+      <h3 id="s11-2"><span class="secnum">11.2</span><code>POST /mlp/v1/challenge</code></h3>
+      <p>Body: <code>{&quot;rid&quot;: &quot;&lt;resource id&gt;&quot;, &quot;subject&quot;: &quot;&lt;key id&gt;&quot;}</code></p>
+      <p>Returns <code>{&quot;nonce&quot;: &quot;&lt;32 random bytes, base64url&gt;&quot;, &quot;expires_at&quot;: &lt;unix seconds&gt;}</code>.</p>
+      <p>The nonce is valid for 60 seconds from issuance, <span class="rfc">MUST</span> be bound to that resource and subject, and <span class="rfc">MUST</span> be single-use. Issuance <span class="rfc">MUST</span> be rate-limited per source address and per subject. The endpoint is unauthenticated by design and <span class="rfc">MUST NOT</span> reveal whether the resource or subject exists.</p>
+      <h3 id="s11-3"><span class="secnum">11.3</span><code>POST /mlp/v1/sessions</code></h3>
+      <p>Body: <code>{&quot;chain&quot;: [&quot;&lt;root grant&gt;&quot;, &quot;&lt;child&gt;&quot;, ..., &quot;&lt;leaf&gt;&quot;]}</code> Header: <code>Meshless-Proof</code>.</p>
+      <p>The provider validates the chain (§9.4), the descriptor, the proof binding, and policy, then returns <code>{&quot;sid&quot;: &quot;&lt;32 random bytes, base64url&gt;&quot;, &quot;expires_at&quot;: &lt;unix seconds&gt;}</code>.</p>
+      <p>The <code>sid</code> is bound to the leaf key identifier and to the exact chain. Session expiry is the earlier of the leaf grant <code>exp</code> and 15 minutes after creation. Before issuing an <code>sid</code>, the provider <span class="rfc">MUST</span> verify <code>grant_hash</code> equals the hash of the leaf grant in that same request body.</p>
+      <h3 id="s11-4"><span class="secnum">11.4</span><code>POST /mlp/v1/invoke</code></h3>
+      <p>Body: <code>{&quot;sid&quot;:&quot;&lt;sid&gt;&quot;,&quot;request_id&quot;:&quot;&lt;uuidv4&gt;&quot;,&quot;rid&quot;:&quot;&lt;rid&gt;&quot;,&quot;action&quot;:&quot;&lt;action&gt;&quot;,&quot;input&quot;:&lt;object&gt;}</code> Header: <code>Meshless-Proof</code>, obtained with a fresh challenge.</p>
+      <p>On every invocation the provider <span class="rfc">MUST</span> re-validate: session validity, chain validity and expiry, revocation, action membership, quotas, input schema, response size, and the proof bindings. Session establishment is not a durable authorization decision.</p>
+      <p>Success returns <code>{&quot;request_id&quot;:&quot;&lt;uuidv4&gt;&quot;,&quot;result&quot;:&lt;object&gt;,&quot;receipt&quot;:&quot;&lt;compact JWS&gt;&quot;}</code>.</p>
+      <h3 id="s11-5"><span class="secnum">11.5</span><code>POST /mlp/v1/sessions/close</code></h3>
+      <p>Body: <code>{&quot;sid&quot;:&quot;&lt;sid&gt;&quot;}</code>. A fresh proof is required.</p>
+      <p>Invalidates the session and cancels cancellable work. Returns <code>{&quot;closed&quot;: true}</code>.</p>
+      <h3 id="s11-6"><span class="secnum">11.6</span><code>POST /mlp/v1/revoke</code></h3>
+      <p>Body: <code>{&quot;rid&quot;:&quot;&lt;rid&gt;&quot;,&quot;jti&quot;:&quot;&lt;grant jti&gt;&quot;}</code> Header: <code>Meshless-Proof</code> signed by the enrolled owner, with <code>grant_hash</code> set to the empty string.</p>
+      <p>The provider <span class="rfc">MUST</span> persist the revocation <strong>before</strong> returning <code>{&quot;revoked&quot;: true}</code>. Revocation of an ancestor invalidates all descendants. Revocation is by <code>jti</code> and therefore applies to exactly one grant in the chain.</p>
+      <p>An owner <span class="rfc">MAY</span> additionally revoke every grant for a resource by disabling the resource locally, and <span class="rfc">MAY</span> revoke an enrollment (§6.4). Owner control <span class="rfc">MUST</span> remain available independently of any consumer session and without network access to any third party.</p>
+      <h3 id="s11-7"><span class="secnum">11.7</span>Binding rules for proofs</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Operation</th><th scope="col"><code>nonce</code> subject</th><th scope="col"><code>grant_hash</code></th></tr>
+          </thead>
+          <tbody>
+            <tr><td>sessions</td><td>leaf subject</td><td>leaf grant hash</td></tr>
+            <tr><td>invoke</td><td>leaf subject</td><td>leaf grant hash</td></tr>
+            <tr><td>close</td><td>leaf subject</td><td>leaf grant hash</td></tr>
+            <tr><td>revoke</td><td>owner</td><td>empty string</td></tr>
+            <tr><td>discovery</td><td>requesting subject</td><td>empty string</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The provider <span class="rfc">MUST</span> reject a reused nonce, a nonce bound to a different subject or resource, a proof for a different method or URI, and a body whose hash does not match. A session identifier alone confers no authority; an <code>sid</code> presented without a valid proof is an unauthenticated request.</p>
+
+      <h2 id="s12"><span class="secnum">12</span>Invocation and receipts</h2>
+      <h3 id="s12-1"><span class="secnum">12.1</span>Processing</h3>
+      <p>For each invocation the provider <span class="rfc">MUST</span>, in order:</p>
+      <ol>
+        <li>authenticate the proof and consume the nonce;</li>
+        <li>resolve the session and re-validate the chain and revocation state;</li>
+        <li>confirm the action is in the leaf grant;</li>
+        <li>validate the input against the action schema for the resource <code>kind</code>;</li>
+        <li>reserve quota atomically across the chain;</li>
+        <li>invoke the handler under a timeout and a response byte limit;</li>
+        <li>record the outcome, emit a receipt, and return.</li>
+      </ol>
+      <p>The handler <span class="rfc">MUST</span> run with least privilege relative to the provider: it <span class="rfc">MUST NOT</span> be able to reach resources the provider has not explicitly granted to it. Implementations <span class="rfc">SHOULD</span> sandbox handlers and <span class="rfc">MUST NOT</span> grant a handler ambient network or filesystem access by default.</p>
+      <h3 id="s12-2"><span class="secnum">12.2</span>Baseline action schemas</h3>
+      <p><strong><code>kind: inference</code></strong> — action <code>infer</code> Input <code>{&quot;prompt&quot;: string, &quot;max_tokens&quot;: positive integer}</code>. Result <code>{&quot;text&quot;: string}</code>. A provider <span class="rfc">MAY</span> impose lower maximums than the request and <span class="rfc">MUST</span> reject <code>max_tokens</code> above its own ceiling with 400 <code>invalid_request</code>.</p>
+      <p><strong><code>kind: mcp</code></strong> — actions <code>tools.list</code> and <code>tools.call</code></p>
+      <ul>
+        <li><code>tools.list</code> input <code>{}</code>, result <code>{&quot;tools&quot;: [{&quot;name&quot;: string, &quot;description&quot;?: string}]}</code></li>
+        <li><code>tools.call</code> input <code>{&quot;name&quot;: string, &quot;arguments&quot;: object}</code>, result <code>{&quot;content&quot;: &lt;object&gt;}</code></li>
+      </ul>
+      <p>A provider <span class="rfc">MUST</span> enforce a separate, explicit tool allowlist and <span class="rfc">MUST</span> validate arguments against the tool's schema. Upstream MCP lifecycle and version negotiation are the provider's responsibility. A grant for <code>tools.call</code> <span class="rfc">MUST NOT</span> expose any tool outside the allowlist, and an allowlist <span class="rfc">MUST NOT</span> be derivable from a grant.</p>
+      <p><strong><code>kind: storage</code>, <code>sensor</code>, <code>compute</code>, <code>application</code></strong> require separately specified, versioned action schemas. Draft 00 does not define them. An implementation that exposes these kinds <span class="rfc">MUST</span> publish its schema and <span class="rfc">MUST NOT</span> invent schema semantics that collide with a future revision.</p>
+      <p>No provider <span class="rfc">MUST</span> forward arbitrary URLs, shell commands, filesystem paths, or headers supplied by a consumer. Streaming and asynchronous jobs are deferred to a future profile.</p>
+      <h3 id="s12-3"><span class="secnum">12.3</span>Idempotency</h3>
+      <p>A provider <span class="rfc">MUST</span> deduplicate <code>request_id</code> per resource per leaf subject until the leaf grant expires, rejecting a repeat with <code>409 duplicate_request</code> instead of executing twice. Rejecting a duplicate is preferred to returning the previous result, because a cached result may be indistinguishable from a fresh one to the caller.</p>
+      <p>A crash after dispatch may leave the outcome unknown. MLP/1 makes no exactly-once claim and <span class="rfc">MUST NOT</span> be described as providing one.</p>
+      <h3 id="s12-4"><span class="secnum">12.4</span>Receipts</h3>
+      <p>A receipt is a compact JWS with <code>typ</code> <code>mlp-receipt+jwt</code>, signed by the provider, containing:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Claim</th><th scope="col">Semantics</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>v</code></td><td><span class="rfc">MUST</span> be <code>1</code>.</td></tr>
+            <tr><td><code>rid</code></td><td>Resource ID.</td></tr>
+            <tr><td><code>iss</code></td><td>Provider key identifier.</td></tr>
+            <tr><td><code>sub</code></td><td>Leaf subject key identifier.</td></tr>
+            <tr><td><code>jti</code></td><td>Leaf grant <code>jti</code>.</td></tr>
+            <tr><td><code>request_id</code></td><td>The invocation's <code>request_id</code>.</td></tr>
+            <tr><td><code>action</code></td><td>Action invoked.</td></tr>
+            <tr><td><code>iat</code></td><td>Completion time.</td></tr>
+            <tr><td><code>status</code></td><td><code>&quot;ok&quot;</code> or <code>&quot;error&quot;</code>.</td></tr>
+            <tr><td><code>request_hash</code></td><td>base64url SHA-256 of the RFC 8785 canonical form of the input object.</td></tr>
+            <tr><td><code>result_hash</code></td><td>base64url SHA-256 of the canonical form of the result object, or <code>null</code> on failure.</td></tr>
+            <tr><td><code>usage</code></td><td><code>{&quot;calls&quot;:1,&quot;bytes&quot;:n,&quot;elapsed_ms&quot;:n}</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Receipts attest that a provider reports having executed an invocation. They do not attest intent, correctness, or that the reported work happened.</p>
+      <p>Receipts <span class="rfc">MUST NOT</span> contain prompts, tool arguments, results, credentials, or internal addresses. A client <span class="rfc">MUST</span> verify the receipt signature against the provider key it learned from the descriptor, and <span class="rfc">MUST</span> verify <code>rid</code>, <code>sub</code>, <code>jti</code>, and <code>request_id</code> bindings before treating a receipt as authentic.</p>
+
+      <h2 id="s13"><span class="secnum">13</span>Errors</h2>
+      <p>Errors are returned as <code>{&quot;error&quot;: {&quot;code&quot;: ..., &quot;message&quot;: ..., &quot;request_id&quot;?: ...}}</code>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">HTTP</th><th scope="col"><code>code</code></th><th scope="col">Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>400</td><td><code>invalid_request</code></td><td>Malformed JSON, schema violation, bad parameters.</td></tr>
+            <tr><td>401</td><td><code>invalid_proof</code></td><td>Proof missing, malformed, mis-bound, stale, or badly signed.</td></tr>
+            <tr><td>401</td><td><code>invalid_grant</code></td><td>Chain invalid, expired, revoked, or chain/session mismatch.</td></tr>
+            <tr><td>403</td><td><code>denied</code></td><td>Authenticated but not permitted.</td></tr>
+            <tr><td>403</td><td><code>revoked</code></td><td>Grant or enrollment revoked.</td></tr>
+            <tr><td>404</td><td><code>unknown_resource</code></td><td>Also returned for a resource concealed from this caller.</td></tr>
+            <tr><td>409</td><td><code>replay</code></td><td>Nonce already consumed.</td></tr>
+            <tr><td>409</td><td><code>duplicate_request</code></td><td><code>request_id</code> already processed.</td></tr>
+            <tr><td>413</td><td><code>too_large</code></td><td>Body or response exceeds a limit.</td></tr>
+            <tr><td>429</td><td><code>quota_exceeded</code></td><td>A grant or owner limit is exhausted.</td></tr>
+            <tr><td>503</td><td><code>unavailable</code></td><td>Transient provider unavailability.</td></tr>
+            <tr><td>504</td><td><code>deadline_exceeded</code></td><td>Handler exceeded <code>max_ms</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Error messages <span class="rfc">MUST NOT</span> expose credentials, internal addresses, stack traces, or the existence of a resource to a party not authorized to learn it. Returning <code>404 unknown_resource</code> where a caller lacks authority is RECOMMENDED over <code>403</code>, except where the caller is authenticated for that resource.</p>
+      <p>Clients <span class="rfc">SHOULD</span> retry transient failures with bounded exponential backoff and jitter. A client <span class="rfc">MUST NOT</span> automatically retry an invocation whose execution outcome is unknown under a new <code>request_id</code>; retry requires the same <code>request_id</code> and an explicit decision by the caller.</p>
+
+      <h2 id="s14"><span class="secnum">14</span>Revocation and offline behavior</h2>
+      <p>The provider is the authoritative enforcement point. It <span class="rfc">MUST</span> check locally persisted revocation and expiry before each invocation and <span class="rfc">SHOULD</span> cancel active work when a grant is revoked.</p>
+      <p>A remote owner cannot guarantee immediate revocation while disconnected from the provider. Local policy <span class="rfc">MAY</span> require online freshness checks or shorter leases for sensitive resources. Implementations <span class="rfc">MUST NOT</span> describe revocation as globally immediate; the honest guarantee is &quot;no new invocation is admitted after the provider learns of the revocation&quot;.</p>
+      <p>Local operation on a LAN or on the same device requires no Internet, but still requires valid credentials, a correct clock, and trusted TLS. Offline operation <span class="rfc">MUST NOT</span> bypass policy, <span class="rfc">MUST NOT</span> silently route private data to a cloud service, and <span class="rfc">MUST NOT</span> fall back to a weaker transport.</p>
+      <p>After a disconnect, reconnection requires fresh session establishment. Queued side-effecting operations require renewed approval by the person or policy that authorized them. Data already disclosed to a provider cannot be recalled by revocation.</p>
+
+      <h2 id="s15"><span class="secnum">15</span>Transport adapter contract</h2>
+      <p>This section is an implementation API contract, not a wire protocol.</p>
+      <p>An adapter implements:</p>
+      <pre><code>connect(endpoint, policy) -&gt; connection
+status() -&gt; {state, endpoint, detail}
+disconnect() -&gt; void
+provision(plan) -&gt; result        // optional</code></pre>
+      <p><code>policy</code> includes allowed destinations, an egress allowlist, and an explicit user-approval requirement for network changes. Adapters <span class="rfc">MUST</span>:</p>
+      <ol>
+        <li>preserve TLS validation end to end (§5.1);</li>
+        <li>report failure rather than degrade;</li>
+        <li>avoid silent public fallback from a private or local path;</li>
+        <li>keep provisioning credentials outside grants, proofs, and agent prompts.</li>
+      </ol>
+      <p>Direct HTTPS on a LAN or an existing private network is the baseline adapter and requires no extra component. A provider's access control remains mandatory regardless of which adapter carried the request; a &quot;trusted network&quot; is not an authorization mechanism.</p>
+      <p>A <code>doxx.net</code> adapter may provision tunnels, DNS, and firewall policy through that service's documented APIs with dedicated credentials. Compatibility with doxx.net <span class="rfc">MUST NOT</span> be claimed before it has been tested and reported (§17).</p>
+
+      <h2 id="s16"><span class="secnum">16</span>Security and privacy considerations</h2>
+      <h3 id="s16-1"><span class="secnum">16.1</span>Threats in scope</h3>
+      <p>Stolen keys, malicious consumers, malicious providers, compromised directories, compromised relays, replay, SSRF through descriptors or redirects, quota races, prompt injection against agent consumers, tool misuse, metadata leakage, and denial of service.</p>
+      <h3 id="s16-2"><span class="secnum">16.2</span>Mitigations</h3>
+      <p>Key-bound proofs; short leases; explicit enrollment; signed descriptors with owner-bound resource IDs; TLS 1.3 with an explicit trust anchor; single-use nonces; strict body and URI binding; strict JSON parsing and canonicalization; per-resource isolation; egress allowlists on handlers; atomic quota; rate limits; minimal logs.</p>
+      <p>Implementations <span class="rfc">MUST</span> reject algorithm confusion (<code>none</code>, HMAC-with-public-key, key-type substitution), keys fetched from signed URLs, and unknown critical headers.</p>
+      <h3 id="s16-3"><span class="secnum">16.3</span>Non-claims</h3>
+      <p>Providers see plaintext inputs and outputs. MLP/1 does not provide confidential computing, zero-knowledge execution, or end-to-end encryption of resource payloads, and <span class="rfc">MUST NOT</span> be described as providing them without a separate verified profile. Relays observe metadata even when they cannot read content. Revocation cannot recall disclosed data.</p>
+      <h3 id="s16-4"><span class="secnum">16.4</span>Physical actuation</h3>
+      <p>There is no remote physical actuation in the baseline. Robotics telemetry is read-only. A future actuation profile requires local safety interlocks, an independent emergency stop that does not depend on the protocol path, and hardware-level limits. Draft 00 <span class="rfc">MUST NOT</span> be used to move, energize, or unlock physical systems.</p>
+      <h3 id="s16-5"><span class="secnum">16.5</span>Data handling</h3>
+      <p>Receipts and logs <span class="rfc">SHOULD</span> be locally controlled with configurable retention. Implementations <span class="rfc">SHOULD</span> minimize what is logged: key identifiers, action names, outcomes, and byte counts, not payloads. Identities and resource inventories <span class="rfc">MUST NOT</span> be published by default.</p>
+
+      <h2 id="s17"><span class="secnum">17</span>Conformance and test plan</h2>
+      <h3 id="s17-1"><span class="secnum">17.1</span>Required test matrix</h3>
+      <p>Consumer and provider implementations <span class="rfc">MUST</span> pass at least:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">#</th><th scope="col">Case</th><th scope="col">Expected</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Enrolled key, valid grant</td><td>admitted</td></tr>
+            <tr><td>2</td><td>Unenrolled key</td><td>rejected 401</td></tr>
+            <tr><td>3</td><td>Tampered JWS payload or signature</td><td>rejected 401</td></tr>
+            <tr><td>4</td><td>Wrong audience, resource, or action</td><td>rejected 403/401</td></tr>
+            <tr><td>5</td><td>Expired grant; not-yet-valid grant</td><td>rejected 401</td></tr>
+            <tr><td>6</td><td>Nonce replay</td><td>rejected 409</td></tr>
+            <tr><td>7</td><td>Body substitution after proof</td><td>rejected 401</td></tr>
+            <tr><td>8</td><td>Parent hash mismatch</td><td>rejected 401</td></tr>
+            <tr><td>9</td><td>Delegation escalation (wider actions, lower depth, false delegate)</td><td>rejected 401</td></tr>
+            <tr><td>10</td><td>Aggregate sibling quota exhaustion</td><td>rejected 429</td></tr>
+            <tr><td>11</td><td>Concurrent quota race</td><td>ceiling not exceeded</td></tr>
+            <tr><td>12</td><td>Revoked ancestor</td><td>rejected 403</td></tr>
+            <tr><td>13</td><td>Duplicate <code>request_id</code></td><td>rejected 409</td></tr>
+            <tr><td>14</td><td>Provider restart mid-window</td><td>counters and revocations survive</td></tr>
+            <tr><td>15</td><td>Stale descriptor <code>seq</code></td><td>rejected</td></tr>
+            <tr><td>16</td><td>Invalid TLS certificate</td><td>connection refused</td></tr>
+            <tr><td>17</td><td>Denied MCP tool</td><td>rejected 403</td></tr>
+            <tr><td>18</td><td>Unavailable transport</td><td>reported error, no silent fallback</td></tr>
+            <tr><td>19</td><td>Local-only operation with no Internet</td><td>succeeds</td></tr>
+            <tr><td>20</td><td>Non-canonical JSON payload</td><td>rejected</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 id="s17-2"><span class="secnum">17.2</span>Test vectors</h3>
+      <p>Deterministic fixtures <span class="rfc">MUST</span> be published with the specification: fixed test keys (never production keys), exact canonical payload bytes, signatures, and expected outcomes. Vectors live in <code>test-vectors/</code> in this repository and are the normative reference for signature-level interoperability.</p>
+      <h3 id="s17-3"><span class="secnum">17.3</span>Stability</h3>
+      <p>Independent implementation interoperability is required before any 1.0 designation. Draft 00 does not claim interoperable independent implementations.</p>
+      <p>The repository does contain a reference implementation and the fixtures above. They exist to make the specification falsifiable, not to define it: an implementation that disagrees with the reference implementation and cites this document is arguing correctly, and a reference implementation that disagrees with this document is wrong.</p>
+
+      <h2 id="s18"><span class="secnum">18</span>Extensions and governance</h2>
+      <p>Major version changes <span class="rfc">MAY</span> break compatibility. A receiver <span class="rfc">MUST</span> reject an unknown major version. Optional extensions require explicit negotiation and <span class="rfc">MUST NOT</span> weaken any baseline check; a negotiation that would relax a check is non-conforming.</p>
+      <p>Proposed future profiles, none required: WebAuthn enrollment, HeartBadge or Bitcoin-anchored proofs, Trellis-backed receipts, libp2p discovery, streaming and asynchronous invocation, remote attestation, post-quantum signatures, metering and payments, and confidential execution.</p>
+      <p>The project maintains public proposals, a changelog, a threat model, test vectors, and implementation reports. Code is licensed Apache-2.0 and this specification is licensed CC BY 4.0. No IANA registrations are requested in this draft; all names, paths, and media types are provisional.</p>
+
+      <h2 id="s19"><span class="secnum">19</span>References</h2>
+      <p><strong>Normative</strong></p>
+      <ul>
+        <li>[RFC 2119] Key words for use in RFCs to Indicate Requirement Levels — https://www.rfc-editor.org/rfc/rfc2119</li>
+        <li>[RFC 8174] Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words — https://www.rfc-editor.org/rfc/rfc8174</li>
+        <li>[RFC 8259] The JavaScript Object Notation (JSON) Data Interchange Format — https://www.rfc-editor.org/rfc/rfc8259</li>
+        <li>[RFC 8446] The Transport Layer Security (TLS) Protocol Version 1.3 — https://www.rfc-editor.org/rfc/rfc8446</li>
+        <li>[RFC 7515] JSON Web Signature (JWS) — https://www.rfc-editor.org/rfc/rfc7515</li>
+        <li>[RFC 8037] CFRG Elliptic Curve Diffie-Hellman (ECDH) and Signatures in JOSE — https://www.rfc-editor.org/rfc/rfc8037</li>
+        <li>[RFC 7638] JSON Web Key (JWK) Thumbprint — https://www.rfc-editor.org/rfc/rfc7638</li>
+        <li>[RFC 8785] JSON Canonicalization Scheme (JCS) — https://www.rfc-editor.org/rfc/rfc8785</li>
+        <li>[RFC 9562] Universally Unique Identifiers (UUIDs) — https://www.rfc-editor.org/rfc/rfc9562</li>
+        <li>[RFC 4648] The Base16, Base32, and Base64 Data Encodings — https://www.rfc-editor.org/rfc/rfc4648</li>
+      </ul>
+      <p><strong>Informative</strong></p>
+      <ul>
+        <li>[RFC 9449] OAuth 2.0 Demonstrating Proof of Possession (DPoP) — https://www.rfc-editor.org/rfc/rfc9449</li>
+        <li>libp2p specifications — https://github.com/libp2p/specs</li>
+        <li>UCAN — https://ucan.xyz/</li>
+        <li>Model Context Protocol — https://modelcontextprotocol.io/</li>
+        <li>doxx.net Agentic Defined Network — https://www.doxx.net/help/features/agentic-defined-network/overview/</li>
+      </ul>
+      <hr>
+
+      <h2 id="appendix-a"><span class="secnum">A</span>Proposed doxx.net pilot (non-normative)</h2>
+      <p>See <code>docs/doxx-pilot.md</code> for the expanded engineering plan. Summary: connect two enrolled devices over a private doxx.net network; host one narrowly scoped inference or MCP resource on one; exchange the signed descriptor; issue a five-minute grant; invoke from the second device; then demonstrate a denied action, revocation, and LAN operation with the external network removed. Use the same resource ID and grant semantics on both transports. Measure setup time, invocation overhead, revocation enforcement, and failure behavior against a direct LAN baseline.</p>
+      <p>Do not use customer data or robot actuation. Network credentials remain in local secret storage. Success requires recorded positive and negative results, not a UI demonstration.</p>
+      <p>Proposed collaboration: Steadwell Labs supplies the protocol and a resource gateway; doxx.net provides technical review and a supported connectivity integration, subject to mutual agreement. No compatibility claim is made until tested.</p>
+
+      <h2 id="appendix-b"><span class="secnum">B</span>Wire examples (non-normative)</h2>
+      <p><code>specs/examples/mcp-tools/</code> contains one complete two-hop invocation as files: a descriptor, a root grant, a narrowed child grant, the request body, a proof over that body, and a receipt, with decoded claims for each. Every byte in that directory verifies against the clock printed in its <code>claims.json</code>.</p>
+      <p>The example is generated from <code>test-vectors/mlp1-draft00.json</code> by <code>npm run examples</code>, so it cannot drift from the fixtures the conformance suite uses.</p>
+
+      <h2 id="appendix-c"><span class="secnum">C</span>Changes in Draft 00</h2>
+      <p>Ratified from the pre-draft working notes; recorded here rather than in <code>CHANGELOG.md</code> because no earlier revision was published.</p>
+      <ol>
+        <li><strong>Key distribution is now in-band and self-verifying.</strong> Descriptors carry <code>owner_jwk</code> and <code>provider_jwk</code>; grants carry <code>sub_jwk</code>. Without this, a verifier could resolve a <code>kid</code> only by trusting a lookup it had no way to validate, and a grant chain could not be verified offline. See §6.2.</li>
+        <li><strong>Canonical payloads are mandatory on the wire, not just before signing.</strong> Verifiers reject a payload that is not byte-identical to its canonical form. Otherwise two encodings of the same grant produce two <code>parent</code> hashes and <code>grant_hash</code> bindings for semantically identical authority.</li>
+        <li><strong>Grant actions are explicitly subsetted against the descriptor.</strong> The draft constrained grants against their parent but not against the descriptor, so an owner could issue a grant for an action that was never declared.</li>
+        <li><strong>The audience is bound to the descriptor as well as the grant.</strong> §9.2 and §9.4 now require <code>aud</code> to equal the descriptor <code>provider</code>, closing a grant-reuse path between providers that share a resource ID.</li>
+        <li><strong>Chain length is explicitly bounded</strong> to four grants (root plus three delegations), matching the 0–3 depth range.</li>
+        <li><strong>Discovery requires a proof</strong> and returns 404 rather than an auth error, so that concealment is the default.</li>
+        <li><strong>Duplicate <code>request_id</code> is rejected rather than answered from cache.</strong></li>
+        <li><strong>Baseline schemas for non-inference/MCP kinds are explicitly unspecified</strong> rather than implied, so implementations cannot silently diverge.</li>
+      </ol>
+
+      <div class="docfoot">
+        <span>End of MLP-0000-core · Draft 00</span>
+        <span><a href="../index.html">Specification index</a> · <a href="../../implementations/index.html">Implementation status</a></span>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="wordmark" href="../../index.html">meshless<span class="dot">.</span></a>
+        <p>An open initiative by Steadwell Labs.</p>
+        <p class="muted" style="font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase">A Steadwell Solutions reference</p>
+      </div>
+      <div class="footer-col">
+        <h2>Protocol</h2>
+        <ul>
+          <li><a href="../index.html">Specification index</a></li>
+          <li><a href="index.html">MLP/1 core draft</a></li>
+          <li><a href="../../implementations/index.html">Implementations</a></li>
+          <li><a href="https://github.com/steadwell-labs/meshless" rel="noopener">Repository</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Meta</h2>
+        <ul>
+          <li><a href="https://meshless.network">meshless.network</a></li>
+          <li><span class="muted">MLP/1 · Draft 00</span></li>
+          <li><span class="muted">Experimental · not an IETF submission</span></li>
+          <li><a href="https://github.com/steadwell-labs/meshless/blob/main/LICENSE" rel="noopener">Proposed licensing</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>© 2026 Steadwell Solutions</span>
+      <span class="labs">An open initiative by Steadwell Labs.</span>
+      <span>Specification text: CC BY 4.0 (proposed)</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

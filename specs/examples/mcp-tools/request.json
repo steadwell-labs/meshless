@@ -1,0 +1,7 @@
+{
+  "action": "tools.call",
+  "input": {
+    "name": "system_status",
+    "arguments": {}
+  }
+}

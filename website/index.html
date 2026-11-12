@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meshless — Relay Access, Not Ownership</title>
+<meta name="description" content="Meshless is an open protocol for discovering, authorizing, and accessing distributed computing resources across independently owned infrastructure.">
+<meta name="theme-color" content="#08090a">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%2308090a'/%3E%3Cg%20fill='none'%20stroke='%2379e6b3'%20stroke-width='1.6'%3E%3Ccircle%20cx='9'%20cy='22'%20r='3'/%3E%3Ccircle%20cx='23'%20cy='22'%20r='3'/%3E%3Ccircle%20cx='16'%20cy='10'%20r='3'/%3E%3Cpath%20d='M11.5%2020.2%2014.6%2012.6M20.5%2020.2%2017.4%2012.6M12%2022h8'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Meshless">
+<meta property="og:title" content="Meshless — Relay Access, Not Ownership">
+<meta property="og:description" content="An open protocol for discovering, authorizing, and accessing distributed computing resources across independently owned infrastructure.">
+<meta property="og:url" content="https://meshless.network/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Meshless — Relay Access, Not Ownership">
+<meta name="twitter:description" content="The internet connected computers. Meshless connects their capabilities. An open protocol for resource access across independently owned infrastructure.">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="wordmark" href="index.html">meshless<span class="dot">.</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html" aria-current="page">Overview</a>
+      <a href="spec/index.html">Specification</a>
+      <a class="nav-optional" href="implementations/index.html">Implementations</a>
+      <a class="ext" href="https://github.com/steadwell-labs/meshless" rel="noopener">GitHub</a>
+      <span class="version">MLP/1 · Draft 00</span>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">THE OPEN RESOURCE ACCESS PROTOCOL</p>
+      <h1>Relay access,<br>not ownership.</h1>
+
+      <div class="hero-cols">
+        <p class="lede">The internet connected computers. Meshless connects their capabilities.</p>
+        <div class="hero-aside">
+          <p class="summary">An open protocol for discovering, authorizing, and accessing distributed computing resources across independently owned infrastructure.</p>
+          <ul class="meta-list">
+            <li><span class="k">Status</span><span class="v">Working draft</span></li>
+            <li><span class="k">Version</span><span class="v">MLP/1 · Draft 00</span></li>
+            <li><span class="k">Domain</span><span class="v">meshless.network</span></li>
+            <li><span class="k">Repository</span><span class="v">steadwell-labs/meshless</span></li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn--accent" href="spec/index.html">Read the specification</a>
+            <a class="btn" href="implementations/index.html">Implementation status</a>
+          </div>
+        </div>
+      </div>
+
+      <p class="hero-foot">
+        <span>No account</span>
+        <span>No central registry</span>
+        <span>No blockchain</span>
+        <span>No vendor</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">01 / Why</p>
+          <h2>Addressability is not access.</h2>
+        </div>
+        <div class="section-intro">
+          <p>Every meaningful resource on a network — a GPU, a private dataset, a sensor, a tool server — belongs to someone. Reaching it today means a shared account, a network position, or a copy of the data. Each grants more than it should, and none of them states precisely what was allowed.</p>
+        </div>
+      </div>
+
+      <div class="section-head" style="margin-bottom:0">
+        <div>
+          <p class="muted" style="font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase">The separation</p>
+          <p style="font-size:1.35rem;line-height:1.35;letter-spacing:-.02em;max-width:22ch;margin-top:10px">Who owns a resource, who can reach it, and who may use it are three different questions.</p>
+        </div>
+        <div class="section-intro">
+          <p>Meshless separates them. A relay forwards traffic but cannot authorize access. A directory distributes signed descriptors but cannot grant authority. A grant is a signed, scoped, expiring statement about specific actions — not a bearer credential, and not a property of the network.</p>
+          <p>Nothing in the design requires a blockchain, a central registry, a commercial account, or a particular AI agent. Two devices on the same LAN are a complete deployment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="principles">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">02 / Design principles</p>
+          <h2>Six constraints, taken seriously.</h2>
+        </div>
+        <div class="section-intro">
+          <p>These are the constraints the draft is built on, reproduced in the project's own words. The underlying goals and non-goals are stated in <a href="spec/mlp-0000-core/index.html#s3">§3 of the draft</a>.</p>
+        </div>
+      </div>
+
+      <div class="hairgrid">
+        <article class="card">
+          <span class="idx">P1</span>
+          <h3>Ownership remains with the owner</h3>
+          <p>Access to a resource does not imply ownership of the resource.</p>
+          <span class="ref">Spec §4 · §6</span>
+        </article>
+
+        <article class="card">
+          <span class="idx">P2</span>
+          <h3>Local-first</h3>
+          <p>Internet connectivity is a capability, not a prerequisite for local operation.</p>
+          <span class="ref">Spec §3 · §14</span>
+        </article>
+
+        <article class="card">
+          <span class="idx">P3</span>
+          <h3>Transport-agnostic</h3>
+          <p>Resources can be accessed through compatible private networks, peer-to-peer transports, or local connections.</p>
+          <span class="ref">Spec §5 · §15</span>
+        </article>
+
+        <article class="card">
+          <span class="idx">P4</span>
+          <h3>Capability-based</h3>
+          <p>Authorization is explicit, scoped, verifiable, and revocable.</p>
+          <span class="ref">Spec §9 · §10 · §11</span>
+        </article>
+
+        <article class="card">
+          <span class="idx">P5</span>
+          <h3>Agent-native</h3>
+          <p>Humans and autonomous agents participate through common protocol interfaces.</p>
+          <span class="ref">Spec §6 · §12</span>
+        </article>
+
+        <article class="card">
+          <span class="idx">P6</span>
+          <h3>Open by design</h3>
+          <p>No mandatory vendor, membership, blockchain, or centralized registry.</p>
+          <span class="ref">Spec §1 · §18</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">03 / How it works</p>
+          <h2>Four signed objects, one live proof.</h2>
+        </div>
+        <div class="section-intro">
+          <p>Every step is verifiable by the party that receives it. Nothing depends on a shared secret, an ambient network position, or a provider's promise about who the caller is.</p>
+        </div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <h3>Enroll a key</h3>
+            <p>The provider authenticates the owner over an independently trusted channel and records a binding between the resource ID and a root Ed25519 key. From then on, possession of that key — not membership in a network — is what owner control means.</p>
+            <span class="ref">§6 — Identity and enrollment</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Publish a signed descriptor</h3>
+            <p>The owner signs the resource descriptor: kind, allowed actions, HTTPS endpoint, sequence number, and an expiry of no more than 24 hours. Descriptors can travel by QR code, file, trusted directory, or a well-known endpoint — but discovery never implies authorization.</p>
+            <span class="ref">§7 — Identifiers and descriptors · §8 — Discovery</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Issue a scoped grant</h3>
+            <p>The owner signs a grant bound to one consumer key, one resource, one audience, and an explicit action list, with call, byte, and time limits. Grants expire within 24 hours and can be attenuated to a child grant — never widened.</p>
+            <span class="ref">§9 — Capability grants</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Invoke and receive a signed receipt</h3>
+            <p>The consumer proves possession of the leaf key for each request with a single-use nonce bound to the method, URI, body hash, and grant hash. The provider verifies the whole chain, enforces quotas atomically, runs the handler, and signs a receipt attesting what it executed.</p>
+            <span class="ref">§10 — Request authentication · §12 — Invocation and receipts</span>
+          </div>
+        </li>
+      </ol>
+      <p class="code-note">The draft does not claim exactly-once execution. A crash after dispatch may leave an outcome unknown, and a receipt attests to provider-reported execution — not to correctness.</p>
+    </div>
+  </section>
+
+  <section class="section" id="model">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">04 / The model</p>
+          <h2>The relay is not the authority.</h2>
+        </div>
+        <div class="section-intro">
+          <p>A provider hosts a resource and enforces policy. A consumer invokes it. The network in between can forward signed objects, but it cannot turn reachability into permission.</p>
+        </div>
+      </div>
+
+      <figure class="figure">
+        <svg class="dg" viewBox="0 0 340 372" role="img" aria-labelledby="dg-title dg-desc" xmlns="http://www.w3.org/2000/svg">
+          <title id="dg-title">The Meshless access model</title>
+          <desc id="dg-desc">A provider on the left holds a resource. A consumer or agent on the right holds a scoped grant. Four signed exchanges cross the network: signed descriptor and scoped grant from provider to consumer, proof plus invocation from consumer to provider, and a signed receipt from provider to consumer. A dashed oval in the middle is labelled relay network, with the annotation not authorization.</desc>
+          <defs>
+            <marker id="dg-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#5a6660"></path>
+            </marker>
+          </defs>
+
+          <rect class="box" x="4" y="54" width="96" height="296" rx="2"></rect>
+          <text class="d-title" x="52" y="76" text-anchor="middle">PROVIDER</text>
+          <rect class="pill" x="11" y="92" width="84" height="48" rx="2"></rect>
+          <text class="d-accent" x="52" y="111" text-anchor="middle">RESOURCE</text>
+          <text class="d-small" x="52" y="127" text-anchor="middle">owner-held key</text>
+          <text class="d-small" x="52" y="170" text-anchor="middle">enforces policy</text>
+          <text class="d-small" x="52" y="184" text-anchor="middle">terminates TLS</text>
+          <text class="d-small" x="52" y="198" text-anchor="middle">holds revocation</text>
+
+          <rect class="box" x="240" y="54" width="96" height="296" rx="2"></rect>
+          <text class="d-title" x="288" y="76" text-anchor="middle">CONSUMER</text>
+          <text class="d-title" x="288" y="89" text-anchor="middle">/ AGENT</text>
+          <rect class="pill" x="247" y="100" width="84" height="48" rx="2"></rect>
+          <text class="d-accent" x="288" y="119" text-anchor="middle">SCOPED GRANT</text>
+          <text class="d-small" x="288" y="135" text-anchor="middle">leaf-bound</text>
+          <text class="d-small" x="288" y="178" text-anchor="middle">proves possession</text>
+          <text class="d-small" x="288" y="192" text-anchor="middle">verifies receipt</text>
+
+          <ellipse class="oval" cx="170" cy="196" rx="58" ry="70"></ellipse>
+          <text class="d-title" x="170" y="186" text-anchor="middle">RELAY</text>
+          <text class="d-title" x="170" y="201" text-anchor="middle">NETWORK</text>
+          <line class="hair" x1="146" y1="212" x2="194" y2="212"></line>
+          <text class="d-note" x="170" y="229" text-anchor="middle">not authorization</text>
+
+          <path class="lane" d="M100 80 H240" marker-end="url(#dg-arrow)"></path>
+          <text class="d-arrow-label" x="170" y="68" text-anchor="middle">signed descriptor</text>
+
+          <path class="lane" d="M100 114 H240" marker-end="url(#dg-arrow)"></path>
+          <text class="d-arrow-label" x="170" y="102" text-anchor="middle">scoped grant</text>
+
+          <path class="lane" d="M240 286 H100" marker-end="url(#dg-arrow)"></path>
+          <text class="d-arrow-label" x="170" y="304" text-anchor="middle">proof + invocation</text>
+
+          <path class="lane" d="M100 326 H240" marker-end="url(#dg-arrow)"></path>
+          <text class="d-arrow-label" x="170" y="344" text-anchor="middle">signed receipt</text>
+        </svg>
+        <figcaption><strong>Schematic, not a deployment diagram.</strong> It omits endpoints, TLS boundaries, directories, and every message the protocol defines beyond these four objects. Relays may observe metadata; they do not acquire authority by carrying it.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="wire">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">05 / On the wire</p>
+          <h2>What a request actually carries.</h2>
+        </div>
+        <div class="section-intro">
+          <p>Compact JWS, Ed25519, canonical JSON, unpadded base64url. The objects below are abridged for reading; the draft is normative.</p>
+        </div>
+      </div>
+
+      <figure class="codeblock">
+        <figcaption><span>MLP/1 · annotated flow</span><span class="live">Draft 00</span></figcaption>
+        <pre><code><span class="cm">// 1 · descriptor — owner-signed, sequence-numbered, ≤ 24 h</span>
+{ "typ": <span class="s">"mlp-resource+jwt"</span>, "v": 1,
+  "rid": <span class="s">"mlp:res:&lt;owner-thumbprint&gt;:&lt;uuidv4&gt;"</span>,
+  "kind": <span class="s">"inference"</span>,
+  "actions": [<span class="s">"infer"</span>],
+  "endpoint": <span class="s">"https://gpu-01.internal"</span>,
+  "seq": 7, "iat": 1763000000, "exp": 1763086400 }
+
+<span class="cm">// 2 · grant — owner → consumer, ≤ 24 h, no wildcards</span>
+{ "typ": <span class="s">"mlp-grant+jwt"</span>,
+  "sub": <span class="s">"mlp:key:&lt;consumer-thumbprint&gt;"</span>,
+  "aud": <span class="s">"mlp:key:&lt;provider-thumbprint&gt;"</span>,
+  "rid": <span class="s">"mlp:res:..."</span>, "actions": [<span class="s">"infer"</span>],
+  "depth": 0, "delegate": false,
+  "limits": { "calls": 20, "bytes": 1048576, "max_ms": 30000 } }
+
+<span class="cm">// 3 · proof — bound to method, URI, body and leaf grant</span>
+<span class="verb">POST</span> /mlp/v1/invoke
+Meshless-Proof: &lt;mlp-proof+jwt&gt;
+{ "sid": <span class="s">"..."</span>, "request_id": <span class="s">"&lt;uuidv4&gt;"</span>,
+  "rid": <span class="s">"mlp:res:..."</span>, "action": <span class="s">"infer"</span>,
+  "input": { "prompt": <span class="s">"..."</span>, "max_tokens": 256 } }
+
+<span class="cm">// 4 · receipt — provider-signed; execution, not correctness</span>
+{ "typ": <span class="s">"mlp-receipt+jwt"</span>,
+  "status": <span class="s">"ok"</span>, "action": <span class="s">"infer"</span>,
+  "usage": { "calls": 1, "bytes": 812, "elapsed_ms": 430 } }</code></pre>
+      </figure>
+      <p class="code-note">Illustrative only: values are examples, and many required claims are omitted. See <a href="spec/mlp-0000-core/index.html#s9">§9</a> and <a href="spec/mlp-0000-core/index.html#s10">§10</a> for the complete claim sets and verification rules.</p>
+    </div>
+  </section>
+
+  <section class="section" id="ecosystem">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">06 / Ecosystem</p>
+          <h2>One layer of a family of open efforts.</h2>
+        </div>
+        <div class="section-intro">
+          <p>Meshless concerns access. Adjacent initiatives concern identity, memory, and intelligence. They are independently specified: MLP/1 requires none of them, and lists them only as optional future profiles where the draft mentions them at all.</p>
+        </div>
+      </div>
+
+      <div class="ecosystem">
+        <article class="eco eco--muted">
+          <span class="role">Identity</span>
+          <span class="name">HeartBadge</span>
+          <p class="tagline">Identity, without surrendering yourself.</p>
+          <span class="state">Independent effort</span>
+        </article>
+
+        <article class="eco eco--muted">
+          <span class="role">Memory</span>
+          <span class="name">Trellis</span>
+          <p class="tagline">Memory, without surrendering your data.</p>
+          <span class="state">Independent effort</span>
+        </article>
+
+        <article class="eco eco--muted">
+          <span class="role">Intelligence</span>
+          <span class="name">CoRA</span>
+          <p class="tagline">Intelligence, without surrendering your agency.</p>
+          <span class="state">Independent effort</span>
+        </article>
+
+        <article class="eco">
+          <span class="role">Access</span>
+          <a class="name" href="spec/index.html">Meshless</a>
+          <p class="tagline">Access, without surrendering ownership.</p>
+          <span class="state now">This protocol</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="status">
+    <div class="wrap">
+      <div class="band">
+        <div>
+          <p class="kicker">07 / Status</p>
+          <h2>Draft 00, and honest about it.</h2>
+        </div>
+        <div>
+          <ul class="status-list">
+            <li><span class="k">Document</span><span>Experimental working draft. Not an IETF submission; no IANA registrations are requested.</span></li>
+            <li><span class="k">Test plan</span><span>Conformance requirements are written down, but draft 00 contains no executable test vectors.</span></li>
+            <li><span class="k">Reference</span><span>A TypeScript implementation is in progress in the repository and is not claimed to conform.</span></li>
+            <li><span class="k">Licensing</span><span>Proposed Apache-2.0 for code and CC BY 4.0 for the specification, subject to owner approval.</span></li>
+          </ul>
+          <div class="actions">
+            <a class="btn" href="spec/index.html">Read the draft</a>
+            <a class="btn" href="implementations/index.html">See implementation status</a>
+            <a class="btn" href="https://github.com/steadwell-labs/meshless" rel="noopener">Repository</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="wordmark" href="index.html">meshless<span class="dot">.</span></a>
+        <p>An open initiative by Steadwell Labs.</p>
+        <p class="muted" style="font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase">A Steadwell Solutions reference</p>
+      </div>
+      <div class="footer-col">
+        <h2>Protocol</h2>
+        <ul>
+          <li><a href="spec/index.html">Specification index</a></li>
+          <li><a href="spec/mlp-0000-core/index.html">MLP/1 core draft</a></li>
+          <li><a href="implementations/index.html">Implementations</a></li>
+          <li><a href="https://github.com/steadwell-labs/meshless" rel="noopener">Repository</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Meta</h2>
+        <ul>
+          <li><a href="https://meshless.network">meshless.network</a></li>
+          <li><span class="muted">MLP/1 · Draft 00</span></li>
+          <li><span class="muted">Experimental · not an IETF submission</span></li>
+          <li><a href="https://github.com/steadwell-labs/meshless/blob/main/LICENSE" rel="noopener">Proposed licensing</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>© 2026 Steadwell Solutions</span>
+      <span class="labs">An open initiative by Steadwell Labs.</span>
+      <span>Specification text: CC BY 4.0 (proposed)</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

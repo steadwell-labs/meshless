@@ -1,0 +1,266 @@
+{
+  "spec": "MLP/1",
+  "draft": "Draft 00",
+  "note": "Deterministic fixtures. Fixed seeds and fixed clock; never production keys. Regenerate with `npm run vectors`.",
+  "clock": 1762958400,
+  "resource": "mlp:res:UDDReOZl1ipXAfp9wYsm13sDBMK5og--QWdBjzuf6o4:3f0f8b3c-1a2b-4c3d-8e9f-0123456789ab",
+  "origin": "https://127.0.0.1:8443",
+  "keys": [
+    {
+      "name": "owner",
+      "seed": "0101010101010101010101010101010101010101010101010101010101010101",
+      "keyId": "mlp:key:UDDReOZl1ipXAfp9wYsm13sDBMK5og--QWdBjzuf6o4",
+      "jwk": {
+        "crv": "Ed25519",
+        "kty": "OKP",
+        "x": "iojj3XQJ8ZX9UtstPLpdcspnCb8dlBIb83SIAbQPb1w"
+      }
+    },
+    {
+      "name": "provider",
+      "seed": "0202020202020202020202020202020202020202020202020202020202020202",
+      "keyId": "mlp:key:aVBtapLd11SUVKIMGJfPzOEDuN0sXcmzJQNVT-_sKEU",
+      "jwk": {
+        "crv": "Ed25519",
+        "kty": "OKP",
+        "x": "gTl3Dqh9F19Wo1Rmw0x-zMuNipG07jeiXfYPW4_Js5Q"
+      }
+    },
+    {
+      "name": "agent",
+      "seed": "0303030303030303030303030303030303030303030303030303030303030303",
+      "keyId": "mlp:key:nRIE2VmKdMjL1JD7tbV7fXVgXxmv0GKnMFWRUJMTf9Q",
+      "jwk": {
+        "crv": "Ed25519",
+        "kty": "OKP",
+        "x": "7UkoxijRwsbq6QM4kFmVYSlZJzpcY_k2NsFGFKyHN9E"
+      }
+    },
+    {
+      "name": "delegate",
+      "seed": "0404040404040404040404040404040404040404040404040404040404040404",
+      "keyId": "mlp:key:d8Me3uJ82jhdsCstWyVMr3_I2ueeTYG5agM1-2r1_bY",
+      "jwk": {
+        "crv": "Ed25519",
+        "kty": "OKP",
+        "x": "ypOsFwUYcHHWe4PH_w7-gQjo7EUwV113JoeTM9vavnw"
+      }
+    }
+  ],
+  "canonicalization": [
+    {
+      "input": {
+        "b": 1,
+        "a": 2
+      },
+      "canonical": "{\"a\":2,\"b\":1}"
+    },
+    {
+      "input": {
+        "nested": {
+          "z": [
+            1,
+            2,
+            {
+              "y": true,
+              "x": null
+            }
+          ]
+        }
+      },
+      "canonical": "{\"nested\":{\"z\":[1,2,{\"x\":null,\"y\":true}]}}"
+    },
+    {
+      "input": 0,
+      "canonical": "0"
+    },
+    {
+      "input": 1e+21,
+      "canonical": "1e+21"
+    },
+    {
+      "input": 1e-7,
+      "canonical": "1e-7"
+    },
+    {
+      "input": "ü",
+      "canonical": "\"ü\""
+    },
+    {
+      "input": "a\"b\\c\n",
+      "canonical": "\"a\\\"b\\\\c\\n\""
+    }
+  ],
+  "descriptor": {
+    "compact": "eyJhbGciOiJFZERTQSIsImtpZCI6Im1scDprZXk6VUREUmVPWmwxaXBYQWZwOXdZc20xM3NEQk1LNW9nLS1RV2RCanp1ZjZvNCIsInR5cCI6Im1scC1yZXNvdXJjZStqd3QifQ.eyJhY3Rpb25zIjpbInRvb2xzLmNhbGwiLCJ0b29scy5saXN0Il0sImVuZHBvaW50IjoiaHR0cHM6Ly8xMjcuMC4wLjE6ODQ0MyIsImV4cCI6MTc2Mjk2MjAwMCwiaWF0IjoxNzYyOTU4NDAwLCJpc3MiOiJtbHA6a2V5OlVERFJlT1psMWlwWEFmcDl3WXNtMTNzREJNSzVvZy0tUVdkQmp6dWY2bzQiLCJraW5kIjoibWNwIiwib3duZXJfandrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiaW9qajNYUUo4Wlg5VXRzdFBMcGRjc3BuQ2I4ZGxCSWI4M1NJQWJRUGIxdyJ9LCJwcm92aWRlciI6Im1scDprZXk6YVZCdGFwTGQxMVNVVktJTUdKZlB6T0VEdU4wc1hjbXpKUU5WVC1fc0tFVSIsInByb3ZpZGVyX2p3ayI6eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6ImdUbDNEcWg5RjE5V28xUm13MHgtek11TmlwRzA3amVpWGZZUFc0X0pzNVEifSwicmlkIjoibWxwOnJlczpVRERSZU9abDFpcFhBZnA5d1lzbTEzc0RCTUs1b2ctLVFXZEJqenVmNm80OjNmMGY4YjNjLTFhMmItNGMzZC04ZTlmLTAxMjM0NTY3ODlhYiIsInNlcSI6MSwidiI6MX0.nwsCUjZDyZgFMwxDtNd0v6Q9ZcJmeDFideStE86sifTOPCjPR-r36qGDb5A9uui-QdtqBtJKxy9_hi70WfGoCQ",
+    "claims": {
+      "actions": [
+        "tools.call",
+        "tools.list"
+      ],
+      "endpoint": "https://127.0.0.1:8443",
+      "exp": 1762962000,
+      "iat": 1762958400,
+      "iss": "mlp:key:UDDReOZl1ipXAfp9wYsm13sDBMK5og--QWdBjzuf6o4",
+      "kind": "mcp",
+      "owner_jwk": {
+        "crv": "Ed25519",
+        "kty": "OKP",
+        "x": "iojj3XQJ8ZX9UtstPLpdcspnCb8dlBIb83SIAbQPb1w"
+      },
+      "provider": "mlp:key:aVBtapLd11SUVKIMGJfPzOEDuN0sXcmzJQNVT-_sKEU",
+      "provider_jwk": {
+        "crv": "Ed25519",
+        "kty": "OKP",
+        "x": "gTl3Dqh9F19Wo1Rmw0x-zMuNipG07jeiXfYPW4_Js5Q"
+      },
+      "rid": "mlp:res:UDDReOZl1ipXAfp9wYsm13sDBMK5og--QWdBjzuf6o4:3f0f8b3c-1a2b-4c3d-8e9f-0123456789ab",
+      "seq": 1,
+      "v": 1
+    }
+  },
+  "grants": {
+    "root": {
+      "compact": "eyJhbGciOiJFZERTQSIsImtpZCI6Im1scDprZXk6VUREUmVPWmwxaXBYQWZwOXdZc20xM3NEQk1LNW9nLS1RV2RCanp1ZjZvNCIsInR5cCI6Im1scC1ncmFudCtqd3QifQ.eyJhY3Rpb25zIjpbInRvb2xzLmNhbGwiLCJ0b29scy5saXN0Il0sImF1ZCI6Im1scDprZXk6YVZCdGFwTGQxMVNVVktJTUdKZlB6T0VEdU4wc1hjbXpKUU5WVC1fc0tFVSIsImRlbGVnYXRlIjp0cnVlLCJkZXB0aCI6MSwiZXhwIjoxNzYyOTU5MDAwLCJpYXQiOjE3NjI5NTg0MDAsImlzcyI6Im1scDprZXk6VUREUmVPWmwxaXBYQWZwOXdZc20xM3NEQk1LNW9nLS1RV2RCanp1ZjZvNCIsImp0aSI6IjExMTExMTExLTExMTEtNDExMS04MTExLTExMTExMTExMTExMSIsImxpbWl0cyI6eyJieXRlcyI6MTAwMDAsImNhbGxzIjo0LCJtYXhfbXMiOjUwMDB9LCJuYmYiOjE3NjI5NTg0MDAsInBhcmVudCI6bnVsbCwicmlkIjoibWxwOnJlczpVRERSZU9abDFpcFhBZnA5d1lzbTEzc0RCTUs1b2ctLVFXZEJqenVmNm80OjNmMGY4YjNjLTFhMmItNGMzZC04ZTlmLTAxMjM0NTY3ODlhYiIsInN1YiI6Im1scDprZXk6blJJRTJWbUtkTWpMMUpEN3RiVjdmWFZnWHhtdjBHS25NRldSVUpNVGY5USIsInN1Yl9qd2siOnsiY3J2IjoiRWQyNTUxOSIsImt0eSI6Ik9LUCIsIngiOiI3VWtveGlqUndzYnE2UU00a0ZtVllTbFpKenBjWV9rMk5zRkdGS3lITjlFIn0sInYiOjF9.FdNGZVFROyexPKsr-LbwOr-Pf7sC0Ilw9zhRlShHO3Hm8hfF48KJEqvhigivRpfy2bPzn6MO65tx8V9xpIhfAQ",
+      "claims": {
+        "actions": [
+          "tools.call",
+          "tools.list"
+        ],
+        "aud": "mlp:key:aVBtapLd11SUVKIMGJfPzOEDuN0sXcmzJQNVT-_sKEU",
+        "delegate": true,
+        "depth": 1,
+        "exp": 1762959000,
+        "iat": 1762958400,
+        "iss": "mlp:key:UDDReOZl1ipXAfp9wYsm13sDBMK5og--QWdBjzuf6o4",
+        "jti": "11111111-1111-4111-8111-111111111111",
+        "limits": {
+          "bytes": 10000,
+          "calls": 4,
+          "max_ms": 5000
+        },
+        "nbf": 1762958400,
+        "parent": null,
+        "rid": "mlp:res:UDDReOZl1ipXAfp9wYsm13sDBMK5og--QWdBjzuf6o4:3f0f8b3c-1a2b-4c3d-8e9f-0123456789ab",
+        "sub": "mlp:key:nRIE2VmKdMjL1JD7tbV7fXVgXxmv0GKnMFWRUJMTf9Q",
+        "sub_jwk": {
+          "crv": "Ed25519",
+          "kty": "OKP",
+          "x": "7UkoxijRwsbq6QM4kFmVYSlZJzpcY_k2NsFGFKyHN9E"
+        },
+        "v": 1
+      },
+      "hash": "ApjMqYvvBmFsrlsxvE_bDPXTUL_03GDMWN_EAYccTSs"
+    },
+    "child": {
+      "compact": "eyJhbGciOiJFZERTQSIsImtpZCI6Im1scDprZXk6blJJRTJWbUtkTWpMMUpEN3RiVjdmWFZnWHhtdjBHS25NRldSVUpNVGY5USIsInR5cCI6Im1scC1ncmFudCtqd3QifQ.eyJhY3Rpb25zIjpbInRvb2xzLmNhbGwiXSwiYXVkIjoibWxwOmtleTphVkJ0YXBMZDExU1VWS0lNR0pmUHpPRUR1TjBzWGNtekpRTlZULV9zS0VVIiwiZGVsZWdhdGUiOmZhbHNlLCJkZXB0aCI6MCwiZXhwIjoxNzYyOTU5MDAwLCJpYXQiOjE3NjI5NTg0MDAsImlzcyI6Im1scDprZXk6blJJRTJWbUtkTWpMMUpEN3RiVjdmWFZnWHhtdjBHS25NRldSVUpNVGY5USIsImp0aSI6IjIyMjIyMjIyLTIyMjItNDIyMi04MjIyLTIyMjIyMjIyMjIyMiIsImxpbWl0cyI6eyJieXRlcyI6NDAwMCwiY2FsbHMiOjIsIm1heF9tcyI6NTAwMH0sIm5iZiI6MTc2Mjk1ODQwMCwicGFyZW50IjoiQXBqTXFZdnZCbUZzcmxzeHZFX2JEUFhUVUxfMDNHRE1XTl9FQVljY1RTcyIsInJpZCI6Im1scDpyZXM6VUREUmVPWmwxaXBYQWZwOXdZc20xM3NEQk1LNW9nLS1RV2RCanp1ZjZvNDozZjBmOGIzYy0xYTJiLTRjM2QtOGU5Zi0wMTIzNDU2Nzg5YWIiLCJzdWIiOiJtbHA6a2V5OmQ4TWUzdUo4MmpoZHNDc3RXeVZNcjNfSTJ1ZWVUWUc1YWdNMS0ycjFfYlkiLCJzdWJfandrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoieXBPc0Z3VVljSEhXZTRQSF93Ny1nUWpvN0VVd1YxMTNKb2VUTTl2YXZudyJ9LCJ2IjoxfQ.G4ikIS2QDC5qUnAytq5-_lBBQuiPWpJoLQZlwW-exfQR4QddiIrVj8wJhU2JbjTMPvxuPS_HA9_IA1vdcmknCA",
+      "claims": {
+        "actions": [
+          "tools.call"
+        ],
+        "aud": "mlp:key:aVBtapLd11SUVKIMGJfPzOEDuN0sXcmzJQNVT-_sKEU",
+        "delegate": false,
+        "depth": 0,
+        "exp": 1762959000,
+        "iat": 1762958400,
+        "iss": "mlp:key:nRIE2VmKdMjL1JD7tbV7fXVgXxmv0GKnMFWRUJMTf9Q",
+        "jti": "22222222-2222-4222-8222-222222222222",
+        "limits": {
+          "bytes": 4000,
+          "calls": 2,
+          "max_ms": 5000
+        },
+        "nbf": 1762958400,
+        "parent": "ApjMqYvvBmFsrlsxvE_bDPXTUL_03GDMWN_EAYccTSs",
+        "rid": "mlp:res:UDDReOZl1ipXAfp9wYsm13sDBMK5og--QWdBjzuf6o4:3f0f8b3c-1a2b-4c3d-8e9f-0123456789ab",
+        "sub": "mlp:key:d8Me3uJ82jhdsCstWyVMr3_I2ueeTYG5agM1-2r1_bY",
+        "sub_jwk": {
+          "crv": "Ed25519",
+          "kty": "OKP",
+          "x": "ypOsFwUYcHHWe4PH_w7-gQjo7EUwV113JoeTM9vavnw"
+        },
+        "v": 1
+      },
+      "hash": "SGhnTQT53QVsXcEtAI1XzzRGWxh_s1XAAi1_aR3eJyc"
+    },
+    "chain": [
+      "eyJhbGciOiJFZERTQSIsImtpZCI6Im1scDprZXk6VUREUmVPWmwxaXBYQWZwOXdZc20xM3NEQk1LNW9nLS1RV2RCanp1ZjZvNCIsInR5cCI6Im1scC1ncmFudCtqd3QifQ.eyJhY3Rpb25zIjpbInRvb2xzLmNhbGwiLCJ0b29scy5saXN0Il0sImF1ZCI6Im1scDprZXk6YVZCdGFwTGQxMVNVVktJTUdKZlB6T0VEdU4wc1hjbXpKUU5WVC1fc0tFVSIsImRlbGVnYXRlIjp0cnVlLCJkZXB0aCI6MSwiZXhwIjoxNzYyOTU5MDAwLCJpYXQiOjE3NjI5NTg0MDAsImlzcyI6Im1scDprZXk6VUREUmVPWmwxaXBYQWZwOXdZc20xM3NEQk1LNW9nLS1RV2RCanp1ZjZvNCIsImp0aSI6IjExMTExMTExLTExMTEtNDExMS04MTExLTExMTExMTExMTExMSIsImxpbWl0cyI6eyJieXRlcyI6MTAwMDAsImNhbGxzIjo0LCJtYXhfbXMiOjUwMDB9LCJuYmYiOjE3NjI5NTg0MDAsInBhcmVudCI6bnVsbCwicmlkIjoibWxwOnJlczpVRERSZU9abDFpcFhBZnA5d1lzbTEzc0RCTUs1b2ctLVFXZEJqenVmNm80OjNmMGY4YjNjLTFhMmItNGMzZC04ZTlmLTAxMjM0NTY3ODlhYiIsInN1YiI6Im1scDprZXk6blJJRTJWbUtkTWpMMUpEN3RiVjdmWFZnWHhtdjBHS25NRldSVUpNVGY5USIsInN1Yl9qd2siOnsiY3J2IjoiRWQyNTUxOSIsImt0eSI6Ik9LUCIsIngiOiI3VWtveGlqUndzYnE2UU00a0ZtVllTbFpKenBjWV9rMk5zRkdGS3lITjlFIn0sInYiOjF9.FdNGZVFROyexPKsr-LbwOr-Pf7sC0Ilw9zhRlShHO3Hm8hfF48KJEqvhigivRpfy2bPzn6MO65tx8V9xpIhfAQ",
+      "eyJhbGciOiJFZERTQSIsImtpZCI6Im1scDprZXk6blJJRTJWbUtkTWpMMUpEN3RiVjdmWFZnWHhtdjBHS25NRldSVUpNVGY5USIsInR5cCI6Im1scC1ncmFudCtqd3QifQ.eyJhY3Rpb25zIjpbInRvb2xzLmNhbGwiXSwiYXVkIjoibWxwOmtleTphVkJ0YXBMZDExU1VWS0lNR0pmUHpPRUR1TjBzWGNtekpRTlZULV9zS0VVIiwiZGVsZWdhdGUiOmZhbHNlLCJkZXB0aCI6MCwiZXhwIjoxNzYyOTU5MDAwLCJpYXQiOjE3NjI5NTg0MDAsImlzcyI6Im1scDprZXk6blJJRTJWbUtkTWpMMUpEN3RiVjdmWFZnWHhtdjBHS25NRldSVUpNVGY5USIsImp0aSI6IjIyMjIyMjIyLTIyMjItNDIyMi04MjIyLTIyMjIyMjIyMjIyMiIsImxpbWl0cyI6eyJieXRlcyI6NDAwMCwiY2FsbHMiOjIsIm1heF9tcyI6NTAwMH0sIm5iZiI6MTc2Mjk1ODQwMCwicGFyZW50IjoiQXBqTXFZdnZCbUZzcmxzeHZFX2JEUFhUVUxfMDNHRE1XTl9FQVljY1RTcyIsInJpZCI6Im1scDpyZXM6VUREUmVPWmwxaXBYQWZwOXdZc20xM3NEQk1LNW9nLS1RV2RCanp1ZjZvNDozZjBmOGIzYy0xYTJiLTRjM2QtOGU5Zi0wMTIzNDU2Nzg5YWIiLCJzdWIiOiJtbHA6a2V5OmQ4TWUzdUo4MmpoZHNDc3RXeVZNcjNfSTJ1ZWVUWUc1YWdNMS0ycjFfYlkiLCJzdWJfandrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoieXBPc0Z3VVljSEhXZTRQSF93Ny1nUWpvN0VVd1YxMTNKb2VUTTl2YXZudyJ9LCJ2IjoxfQ.G4ikIS2QDC5qUnAytq5-_lBBQuiPWpJoLQZlwW-exfQR4QddiIrVj8wJhU2JbjTMPvxuPS_HA9_IA1vdcmknCA"
+    ]
+  },
+  "proof": {
+    "compact": "eyJhbGciOiJFZERTQSIsImtpZCI6Im1scDprZXk6ZDhNZTN1Sjgyamhkc0NzdFd5Vk1yM19JMnVlZVRZRzVhZ00xLTJyMV9iWSIsInR5cCI6Im1scC1wcm9vZitqd3QifQ.eyJhdWQiOiJtbHA6a2V5OmFWQnRhcExkMTFTVVZLSU1HSmZQek9FRHVOMHNYY216SlFOVlQtX3NLRVUiLCJib2R5X2hhc2giOiJxTmdkU0VKZUZ6Z1hUUTAzS0VidHQ5Y3F0UkROemhuV2FLTnRYR21hZE84IiwiZ3JhbnRfaGFzaCI6IlNHaG5UUVQ1M1FWc1hjRXRBSTFYenpSR1d4aF9zMVhBQWkxX2FSM2VKeWMiLCJpYXQiOjE3NjI5NTg0MDAsImlzcyI6Im1scDprZXk6ZDhNZTN1Sjgyamhkc0NzdFd5Vk1yM19JMnVlZVRZRzVhZ00xLTJyMV9iWSIsImp0aSI6IjMzMzMzMzMzLTMzMzMtNDMzMy04MzMzLTMzMzMzMzMzMzMzMyIsIm1ldGhvZCI6IlBPU1QiLCJub25jZSI6IkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUEiLCJ1cmkiOiJodHRwczovLzEyNy4wLjAuMTo4NDQzL21scC92MS9pbnZva2UiLCJ2IjoxfQ.ERzAFsKmw1fH7aWk7OkoxCTEg1Cusa6JbpeH1ZjINDNAkGXMD0BiubUW-bR7jTAHxDUD3ZpSKm8y_mBvPx2aBw",
+    "body": "{\"action\":\"tools.call\",\"input\":{\"name\":\"system_status\",\"arguments\":{}}}",
+    "claims": {
+      "aud": "mlp:key:aVBtapLd11SUVKIMGJfPzOEDuN0sXcmzJQNVT-_sKEU",
+      "body_hash": "qNgdSEJeFzgXTQ03KEbtt9cqtRDNzhnWaKNtXGmadO8",
+      "grant_hash": "SGhnTQT53QVsXcEtAI1XzzRGWxh_s1XAAi1_aR3eJyc",
+      "iat": 1762958400,
+      "iss": "mlp:key:d8Me3uJ82jhdsCstWyVMr3_I2ueeTYG5agM1-2r1_bY",
+      "jti": "33333333-3333-4333-8333-333333333333",
+      "method": "POST",
+      "nonce": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "uri": "https://127.0.0.1:8443/mlp/v1/invoke",
+      "v": 1
+    }
+  },
+  "receipt": {
+    "compact": "eyJhbGciOiJFZERTQSIsImtpZCI6Im1scDprZXk6YVZCdGFwTGQxMVNVVktJTUdKZlB6T0VEdU4wc1hjbXpKUU5WVC1fc0tFVSIsInR5cCI6Im1scC1yZWNlaXB0K2p3dCJ9.eyJhY3Rpb24iOiJ0b29scy5jYWxsIiwiaWF0IjoxNzYyOTU4NDAxLCJpc3MiOiJtbHA6a2V5OmFWQnRhcExkMTFTVVZLSU1HSmZQek9FRHVOMHNYY216SlFOVlQtX3NLRVUiLCJqdGkiOiIyMjIyMjIyMi0yMjIyLTQyMjItODIyMi0yMjIyMjIyMjIyMjIiLCJyZXF1ZXN0X2hhc2giOiJkSmE1SkpjaVM4NndxYmVEZHU2bVlsQXh5dmtZNC1ib3poYkpJaUZjdDJNIiwicmVxdWVzdF9pZCI6IjQ0NDQ0NDQ0LTQ0NDQtNDQ0NC04NDQ0LTQ0NDQ0NDQ0NDQ0NCIsInJlc3VsdF9oYXNoIjoiU0MyTmF3WGtkMjV2c0QxYmJ2TnI5OXFYU21uVHhISmQtdms5MFNXQXg3OCIsInJpZCI6Im1scDpyZXM6VUREUmVPWmwxaXBYQWZwOXdZc20xM3NEQk1LNW9nLS1RV2RCanp1ZjZvNDozZjBmOGIzYy0xYTJiLTRjM2QtOGU5Zi0wMTIzNDU2Nzg5YWIiLCJzdGF0dXMiOiJvayIsInN1YiI6Im1scDprZXk6ZDhNZTN1Sjgyamhkc0NzdFd5Vk1yM19JMnVlZVRZRzVhZ00xLTJyMV9iWSIsInVzYWdlIjp7ImJ5dGVzIjo0MiwiY2FsbHMiOjEsImVsYXBzZWRfbXMiOjd9LCJ2IjoxfQ.yOA4NnihusczZUS6d2izQHqKTYbNt4pOpFTlZRyLfwm1MTBVwqxP65XwgTGGQXnCjtPaR7o75it2md-Xg0BXBQ",
+    "claims": {
+      "action": "tools.call",
+      "iat": 1762958401,
+      "iss": "mlp:key:aVBtapLd11SUVKIMGJfPzOEDuN0sXcmzJQNVT-_sKEU",
+      "jti": "22222222-2222-4222-8222-222222222222",
+      "request_hash": "dJa5JJciS86wqbeDdu6mYlAxyvkY4-bozhbJIiFct2M",
+      "request_id": "44444444-4444-4444-8444-444444444444",
+      "result_hash": "SC2NawXkd25vsD1bbvNr99qXSmnTxHJd-vk90SWAx78",
+      "rid": "mlp:res:UDDReOZl1ipXAfp9wYsm13sDBMK5og--QWdBjzuf6o4:3f0f8b3c-1a2b-4c3d-8e9f-0123456789ab",
+      "status": "ok",
+      "sub": "mlp:key:d8Me3uJ82jhdsCstWyVMr3_I2ueeTYG5agM1-2r1_bY",
+      "usage": {
+        "bytes": 42,
+        "calls": 1,
+        "elapsed_ms": 7
+      },
+      "v": 1
+    }
+  },
+  "negative": [
+    {
+      "id": "neg-01-non-canonical-payload",
+      "description": "Root grant payload with members reordered. Signature bytes stay valid; a verifier must still reject it.",
+      "mutation": "reverse-payload-members",
+      "target": "grants.root.compact",
+      "expected": "reject"
+    },
+    {
+      "id": "neg-02-delegation-widening",
+      "description": "Child grant for an action its parent does not carry.",
+      "mutation": "widen-child-actions",
+      "target": "grants.grants.chain[1]",
+      "expected": "reject"
+    },
+    {
+      "id": "neg-03-wrong-audience",
+      "description": "Root grant addressed to a different provider key.",
+      "mutation": "replace-aud-with-delegate-key",
+      "target": "grants.root.compact",
+      "expected": "reject"
+    },
+    {
+      "id": "neg-04-expired-descriptor",
+      "description": "Descriptor evaluated at clock + 2 hours.",
+      "mutation": "evaluate-at",
+      "value": 1762965600,
+      "target": "descriptor.compact",
+      "expected": "reject"
+    },
+    {
+      "id": "neg-05-proof-body-substitution",
+      "description": "Proof verified against a different body.",
+      "mutation": "swap-proof-body",
+      "target": "proof",
+      "expected": "reject"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "meshless",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Meshless Protocol (MLP/1) \u2014 relay access, not ownership. Specification, reference implementation, and conformance suite.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.ts",
+    "test:watch": "node --test --watch tests/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "vectors": "node packages/cli/src/mlp.ts vectors --output test-vectors",
+    "examples": "node packages/cli/src/mlp.ts examples --output specs/examples/mcp-tools",
+    "demo": "node packages/cli/src/mlp.ts demo",
+    "site": "node website/build.mjs",
+    "check:vectors": "node packages/cli/src/mlp.ts vectors --output test-vectors && git diff --exit-code -- test-vectors",
+    "check:site": "node website/build.mjs && git diff --exit-code -- website/spec/mlp-0000-core/index.html"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "22.18.13"
+  },
+  "keywords": [
+    "meshless",
+    "distributed-computing",
+    "local-first",
+    "edge-computing",
+    "agentic-ai",
+    "peer-to-peer",
+    "capability-security",
+    "mcp",
+    "open-protocol"
+  ]
+}

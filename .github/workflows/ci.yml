@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22.18', '24']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # openssl is preinstalled on ubuntu-latest; the suite generates a
+      # throwaway certificate for the TLS conformance cases.
+      - name: Unit and conformance tests
+        run: npm test
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.18'
+          cache: npm
+      - run: npm ci || npm install
+      - run: npm run typecheck
+
+  artifacts:
+    name: Fixtures and site are current
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.18'
+      - name: Test vectors are regenerated from the code
+        run: npm run check:vectors
+      - name: Specification page is regenerated from the markdown
+        run: npm run check:site
+
+  spec-lint:
+    name: Specification hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: No em dashes in normative tables, no tabs
+        run: |
+          if grep -nP '\t' specs/*.md docs/*.md 2>/dev/null; then
+            echo "tab characters found"; exit 1
+          fi
+          if grep -n 'meshless\.net\b' specs/*.md docs/*.md 2>/dev/null | grep -v 'meshless.network'; then
+            echo "stale meshless.net reference (the project domain is meshless.network)"; exit 1
+          fi
+      - name: Required normative anchors are present
+        run: |
+          for keyword in 'MUST' 'MUST NOT' 'SHOULD' 'MAY'; do
+            grep -q "$keyword" specs/mlp-0000-core.md || { echo "missing $keyword"; exit 1; }
+          done
