@@ -53,7 +53,12 @@ before uploading, so the published copy cannot be stale.
 - Source of truth: this directory on `main`. Nothing is committed back.
 - Enabling: repository Settings → Pages → Build and deployment → Source:
   **GitHub Actions**. This requires admin; a member with only push access
-  cannot set it.
+  cannot set it. Until it is set, the workflow still builds and verifies the
+  site, then emits a warning and skips the upload and deploy instead of failing
+  — so a missing repository setting does not paint every push red. A 404 from
+  the Pages API is treated as "not enabled yet"; any other error (bad token,
+  missing permission, outage) still fails the run. Once Pages is on, re-run the
+  workflow or push again and it publishes.
 - `.nojekyll` is present so that branch-based hosting, if it is ever selected,
   serves the files as written rather than running them through Jekyll.
 
